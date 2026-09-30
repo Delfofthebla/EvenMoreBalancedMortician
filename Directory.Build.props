@@ -1,0 +1,40 @@
+<Project>
+  <Import Project="Directory.Build.props.user" Condition="Exists('Directory.Build.props.user')" />
+
+  <PropertyGroup>
+    <ThunderstoreTeam>Delfofthebla</ThunderstoreTeam>
+    <GameDir Condition="'$(GameDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Risk of Rain 2</GameDir>
+    <GameManagedDir>$(GameDir)\Risk of Rain 2_Data\Managed</GameManagedDir>
+    <ProfileName Condition="'$(ProfileName)' == ''">Main</ProfileName>
+    <ProfileDir Condition="'$(ProfileDir)' == ''">$(APPDATA)\r2modmanPlus-local\RiskOfRain2\profiles\$(ProfileName)\BepInEx</ProfileDir>
+    <ProfilePluginsDir>$(ProfileDir)\plugins</ProfilePluginsDir>
+    <ProfileCoreDir>$(ProfileDir)\core</ProfileCoreDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <DebugType>portable</DebugType>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <Reference>
+      <Private>false</Private>
+    </Reference>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx" HintPath="$(ProfileCoreDir)\BepInEx.dll" />
+    <Reference Include="MonoMod.RuntimeDetour" HintPath="$(ProfileCoreDir)\MonoMod.RuntimeDetour.dll" />
+    <Reference Include="MonoMod.Utils" HintPath="$(ProfileCoreDir)\MonoMod.Utils.dll" />
+    <Reference Include="Mono.Cecil" HintPath="$(ProfileCoreDir)\Mono.Cecil.dll" />
+    <Reference Include="RoR2" HintPath="$(GameManagedDir)\RoR2.dll" />
+    <Reference Include="UnityEngine" HintPath="$(GameManagedDir)\UnityEngine.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(GameManagedDir)\UnityEngine.CoreModule.dll" />
+    <Reference Include="com.unity.multiplayer-hlapi.Runtime" HintPath="$(GameManagedDir)\com.unity.multiplayer-hlapi.Runtime.dll" />
+  </ItemGroup>
+</Project>

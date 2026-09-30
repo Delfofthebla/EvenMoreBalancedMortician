@@ -1,0 +1,12 @@
+{
+  "name": "Even_More_Balanced_Mortician",
+  "version_number": "1.0.0",
+  "website_url": "",
+  "description": "Configurable rebalance of the Mortician survivor. Every body stat, skill number, and mechanical change is configurable, with presets for the original, BalancedMortician, and this rebalance.",
+  "dependencies": [
+    "bbepis-BepInExPack-5.4.2122",
+    "RiskofThunder-R2API_Deployable-1.0.1",
+    "RiskofThunder-R2API_Language-1.1.0",
+    "Bog-Mortician-0.1.5"
+  ]
+}
