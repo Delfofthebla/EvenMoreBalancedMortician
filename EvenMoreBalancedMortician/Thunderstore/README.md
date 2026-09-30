@@ -58,3 +58,7 @@ Choosing a preset overwrites every other setting with that preset's values.
 The host's settings apply to every player in the lobby. Your own config is left untouched and applies again whenever you host or play solo.
 
 Every player needs the same version of this mod to join a lobby.
+
+## Credits
+
+Icon: [Tombstone](https://game-icons.net/1x1/lorc/tombstone.html) by Lorc, from [game-icons.net](https://game-icons.net), licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
