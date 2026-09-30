@@ -7,14 +7,14 @@ using UnityEngine.Networking;
 
 namespace EvenMoreBalancedMortician.Patches;
 
-internal static class TombstoneLifetimePatch
+internal static class TombstoneDurationPatch
 {
     private static Hook _tombstoneStartHook;
-    private static PresetSetting<float> _tombstoneLifetime;
+    private static PresetSetting<float> _tombstoneDuration;
 
-    public static void Install(PresetSetting<float> lifetime)
+    public static void Install(PresetSetting<float> duration)
     {
-        _tombstoneLifetime = lifetime;
+        _tombstoneDuration = duration;
 
         var tombstoneStart = typeof(TombstoneController).GetMethod(nameof(TombstoneController.Start));
         _tombstoneStartHook = new Hook(tombstoneStart, (Action<Action<TombstoneController>, TombstoneController>)StartExpiryTimer);
@@ -24,13 +24,13 @@ internal static class TombstoneLifetimePatch
     {
         orig(self);
 
-        if (!NetworkServer.active || _tombstoneLifetime.Value <= 0f)
+        if (!NetworkServer.active || _tombstoneDuration.Value <= 0f)
             return;
 
         var master = self.GetComponent<CharacterBody>().master;
         if (!master)
             return;
 
-        master.gameObject.AddComponent<MasterSuicideOnTimer>().lifeTimer = _tombstoneLifetime.Value;
+        master.gameObject.AddComponent<MasterSuicideOnTimer>().lifeTimer = _tombstoneDuration.Value;
     }
 }

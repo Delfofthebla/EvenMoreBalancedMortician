@@ -2,8 +2,8 @@ namespace EvenMoreBalancedMortician.Presets;
 
 internal enum MorticianPreset
 {
-    EvenMoreBalanced,
-    BalancedMortician,
     Original,
+    BalancedMortician,
+    EvenMoreBalanced,
     Custom,
 }

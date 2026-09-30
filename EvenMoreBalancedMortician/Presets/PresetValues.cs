@@ -2,17 +2,17 @@ using System;
 
 namespace EvenMoreBalancedMortician.Presets;
 
-internal readonly struct PresetValues<T>(T evenMoreBalanced, T balancedMortician, T original)
+internal readonly struct PresetValues<T>(T original, T balancedMortician, T evenMoreBalanced)
 {
-    public T EvenMoreBalanced { get; } = evenMoreBalanced;
-    public T BalancedMortician { get; } = balancedMortician;
     public T Original { get; } = original;
+    public T BalancedMortician { get; } = balancedMortician;
+    public T EvenMoreBalanced { get; } = evenMoreBalanced;
 
     public T For(MorticianPreset preset) => preset switch
     {
-        MorticianPreset.EvenMoreBalanced => EvenMoreBalanced,
-        MorticianPreset.BalancedMortician => BalancedMortician,
         MorticianPreset.Original => Original,
+        MorticianPreset.BalancedMortician => BalancedMortician,
+        MorticianPreset.EvenMoreBalanced => EvenMoreBalanced,
         _ => throw new ArgumentOutOfRangeException(nameof(preset), preset, "Custom has no preset values."),
     };
 }

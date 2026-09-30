@@ -13,7 +13,9 @@
 
     <ItemGroup>
         <Reference Include="Morris" HintPath="$(ProfilePluginsDir)\Bog-Mortician\Morris.dll" Publicize="true"/>
+        <Reference Include="R2API.Core" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Core\R2API.Core\R2API.Core.dll"/>
         <Reference Include="R2API.Deployable" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Deployable\R2API.Deployable\R2API.Deployable.dll"/>
         <Reference Include="R2API.Language" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Language\R2API.Language\R2API.Language.dll"/>
+        <Reference Include="R2API.Networking" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Networking\R2API.Networking\R2API.Networking.dll"/>
     </ItemGroup>
 </Project>

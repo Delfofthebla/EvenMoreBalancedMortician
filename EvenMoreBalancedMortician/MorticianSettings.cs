@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using BepInEx.Configuration;
 using EvenMoreBalancedMortician.Presets;
 
@@ -12,7 +13,7 @@ internal sealed class MorticianSettings
     private readonly List<IPresetSetting> _presetSettings = [];
 
     private const string GeneralSection = "General";
-    private const string BodySection = "Body Stats";
+    private const string BaseStatsSection = "Base Stats";
     private const string PrimarySection = "Primary - Shovel Strike";
     private const string SecondarySection = "Secondary - Raise Dead";
     private const string UtilitySection = "Utility - Sacrifice";
@@ -36,9 +37,9 @@ internal sealed class MorticianSettings
     public PresetSetting<float> BaseDamage { get; }
     public PresetSetting<float> DamagePerLevel { get; }
 
+    public PresetSetting<bool> ShovelCountsAsPrimarySkill { get; }
     public PresetSetting<float> ShovelDamagePercent { get; }
     public PresetSetting<float> LaunchDamagePercent { get; }
-    public PresetSetting<bool> ShovelCountsAsPrimarySkill { get; }
 
     public PresetSetting<int> GhoulLimit { get; }
     public PresetSetting<float> GhoulBaseDamage { get; }
@@ -51,11 +52,11 @@ internal sealed class MorticianSettings
     public PresetSetting<float> SacrificeRadius { get; }
     public PresetSetting<float> SacrificeHealPercent { get; }
 
+    public PresetSetting<float> TombstoneDuration { get; }
     public PresetSetting<float> TombstoneBaseDamage { get; }
     public PresetSetting<float> TombstoneDamagePerLevel { get; }
     public PresetSetting<float> SoulOrbDamagePercent { get; }
     public PresetSetting<float> TombstoneGhoulSpawnInterval { get; }
-    public PresetSetting<float> TombstoneLifetime { get; }
 
     public MorticianSettings(ConfigFile config)
     {
@@ -67,105 +68,124 @@ internal sealed class MorticianSettings
             "BalancedMortician: Equivalent to Bloonjitsu7's BalancedMortician mod. \n" +
             "Original: Mortician with no changes.");
 
-        BaseHealth = Bind(BodySection, "Base Health",
+        BaseHealth = Bind(BaseStatsSection, "Base Health",
             "Mortician's maximum health at level 1.",
-            Presets(evenMoreBalanced: 170f, balancedMortician: 200f, original: 200f),
+            Presets(original: 200f, balancedMortician: 200f, evenMoreBalanced: 170f),
             vanilla: "Most survivors sit at 110. Loader and Acrid 160. MUL-T 200.");
-        HealthPerLevel = Bind(BodySection, "Health Per Level",
+        HealthPerLevel = Bind(BaseStatsSection, "Health Per Level",
             "Maximum health Mortician gains per level.",
-            Presets(evenMoreBalanced: 51f, balancedMortician: 66f, original: 66f),
+            Presets(original: 66f, balancedMortician: 66f, evenMoreBalanced: 51f),
             vanilla: "Every survivor gains 30% of their base health, so 33 for a 110 health survivor.");
-        BaseRegen = Bind(BodySection, "Base Regen",
+        BaseRegen = Bind(BaseStatsSection, "Base Regen",
             "Health Mortician regenerates per second at level 1.",
-            Presets(evenMoreBalanced: 1f, balancedMortician: 2.5f, original: 2.5f),
+            Presets(original: 2.5f, balancedMortician: 2.5f, evenMoreBalanced: 1f),
             vanilla: "Most survivors 1. Loader and Acrid 2.5.");
-        RegenPerLevel = Bind(BodySection, "Regen Per Level",
+        RegenPerLevel = Bind(BaseStatsSection, "Regen Per Level",
             "Regen per second Mortician gains per level.",
-            Presets(evenMoreBalanced: 0.2f, balancedMortician: 0.5f, original: 0.5f),
+            Presets(original: 0.5f, balancedMortician: 0.5f, evenMoreBalanced: 0.2f),
             vanilla: "Most survivors 0.2. Loader and Acrid 0.5.");
-        BaseArmor = Bind(BodySection, "Base Armor",
+        BaseArmor = Bind(BaseStatsSection, "Base Armor",
             "Mortician's armor at level 1.",
-            Presets(evenMoreBalanced: 10f, balancedMortician: 20f, original: 20f),
+            Presets(original: 20f, balancedMortician: 20f, evenMoreBalanced: 10f),
             vanilla: "Most survivors 0. Mercenary, Loader, Acrid, REX, Seeker and Drifter 20. MUL-T 12.");
-        ArmorPerLevel = Bind(BodySection, "Armor Per Level",
+        ArmorPerLevel = Bind(BaseStatsSection, "Armor Per Level",
             "Armor Mortician gains per level.",
-            Presets(evenMoreBalanced: 0f, balancedMortician: 0f, original: 0f),
+            Presets(original: 0f, balancedMortician: 0f, evenMoreBalanced: 0f),
             vanilla: "Every survivor 0.");
-        BaseDamage = Bind(BodySection, "Base Damage",
+        BaseDamage = Bind(BaseStatsSection, "Base Damage",
             "Mortician's damage at level 1. Only the shovel swing scales with it; ghoul and tombstone attacks use their own damage stats.",
-            Presets(evenMoreBalanced: 12f, balancedMortician: 12f, original: 12f),
+            Presets(original: 12f, balancedMortician: 12f, evenMoreBalanced: 12f),
             vanilla: "Most survivors 12. MUL-T 11. Engineer 14. Acrid 15.");
-        DamagePerLevel = Bind(BodySection, "Damage Per Level",
+        DamagePerLevel = Bind(BaseStatsSection, "Damage Per Level",
             "Damage Mortician gains per level.",
-            Presets(evenMoreBalanced: 2.4f, balancedMortician: 2.4f, original: 2.4f),
+            Presets(original: 2.4f, balancedMortician: 2.4f, evenMoreBalanced: 2.4f),
             vanilla: "Every survivor gains 20% of their base damage, so 2.4 for a 12 damage survivor.");
 
+        ShovelCountsAsPrimarySkill = Bind(PrimarySection, "Counts As Primary Skill Damage",
+            "Whether shovel swings count as primary skill damage. Items that trigger on primary skill hits (such as Luminous Shot) require this.",
+            Presets(original: false, balancedMortician: true, evenMoreBalanced: true));
         ShovelDamagePercent = Bind(PrimarySection, "Swing Damage Percent",
             "Shovel swing damage, as a percent of Mortician's damage stat.",
-            Presets(evenMoreBalanced: 280f, balancedMortician: 360f, original: 800f));
+            Presets(original: 800f, balancedMortician: 360f, evenMoreBalanced: 280f));
         LaunchDamagePercent = Bind(PrimarySection, "Launch Damage Percent",
             "Damage a ghoul or tombstone deals when flung through enemies by your shovel, as a percent of their own damage stats.",
-            Presets(evenMoreBalanced: 350f, balancedMortician: 600f, original: 350f),
+            Presets(original: 350f, balancedMortician: 600f, evenMoreBalanced: 350f),
             note: LaunchDamageNote);
-        ShovelCountsAsPrimarySkill = Bind(PrimarySection, "Counts As Primary Skill Damage",
-            "Whether shovel swings count as primary skill damage. Items that trigger on primary skill hits (such as Luminous Shot) require.",
-            Presets(evenMoreBalanced: true, balancedMortician: true, original: false));
 
         GhoulLimit = Bind(SecondarySection, "Ghoul Limit",
             "Maximum number of ghouls Mortician can have at once; raising another kills the oldest. 0 means no limit.",
-            Presets(evenMoreBalanced: 0, balancedMortician: 0, original: 0),
+            Presets(original: 0, balancedMortician: 0, evenMoreBalanced: 0),
             note: "Replaces the Ghoul limit setting in Mortician's own config.");
         GhoulBaseDamage = Bind(SecondarySection, "Ghoul Base Damage",
             "Ghoul damage at level 1. Sets the damage of ghoul bites, spit, launched ghouls and Sacrifice explosions.",
-            Presets(evenMoreBalanced: 8f, balancedMortician: 8f, original: 12f));
+            Presets(original: 12f, balancedMortician: 8f, evenMoreBalanced: 8f));
         GhoulDamagePerLevel = Bind(SecondarySection, "Ghoul Damage Per Level",
             "Damage ghouls gain per level.",
-            Presets(evenMoreBalanced: 1.6f, balancedMortician: 1.6f, original: 2.4f));
+            Presets(original: 2.4f, balancedMortician: 1.6f, evenMoreBalanced: 1.6f));
         GhoulBiteDamagePercent = Bind(SecondarySection, "Bite Damage Percent",
             "Ghoul bite damage as a percent of the ghoul's damage stat.",
-            Presets(evenMoreBalanced: 150f, balancedMortician: 150f, original: 150f),
+            Presets(original: 150f, balancedMortician: 150f, evenMoreBalanced: 150f),
             note: GhoulDamageNote);
         GhoulSpitDamagePercent = Bind(SecondarySection, "Spit Damage Percent",
             "Ghoul bile spit damage as a percent of the ghoul's damage stat.",
-            Presets(evenMoreBalanced: 100f, balancedMortician: 100f, original: 100f),
+            Presets(original: 100f, balancedMortician: 100f, evenMoreBalanced: 100f),
             note: GhoulDamageNote);
         GhoulsInheritEquipment = Bind(SecondarySection, "Ghouls Inherit Equipment",
-            "Whether newly raised ghouls copy Mortician's items.",
-            Presets(evenMoreBalanced: false, balancedMortician: false, original: true));
+            "Whether newly raised ghouls copy Mortician's equipment. (Ghouls never copy his items)",
+            Presets(original: true, balancedMortician: false, evenMoreBalanced: false));
 
         SacrificeDamagePercent = Bind(UtilitySection, "Detonation Damage Percent",
             "Damage of a sacrificed ghoul's explosion, as a percent of the ghoul's damage stat.",
-            Presets(evenMoreBalanced: 600f, balancedMortician: 925f, original: 700f),
+            Presets(original: 700f, balancedMortician: 925f, evenMoreBalanced: 600f),
             note: GhoulDamageNote);
         SacrificeRadius = Bind(UtilitySection, "Detonation Radius",
             "Radius of a sacrificed ghoul's explosion, in meters.",
-            Presets(evenMoreBalanced: 20f, balancedMortician: 20f, original: 18f));
+            Presets(original: 18f, balancedMortician: 20f, evenMoreBalanced: 20f));
         SacrificeHealPercent = Bind(UtilitySection, "Heal Percent",
             "Percent of Mortician's maximum health healed by each Sacrifice.",
-            Presets(evenMoreBalanced: 10f, balancedMortician: 15f, original: 15f));
+            Presets(original: 15f, balancedMortician: 15f, evenMoreBalanced: 10f));
 
+        TombstoneDuration = Bind(SpecialSection, "Tombstone Duration",
+            "Seconds a tombstone lasts before crumbling. 0 means it lasts until replaced or destroyed.",
+            Presets(original: 0f, balancedMortician: 0f, evenMoreBalanced: 23f));
         TombstoneBaseDamage = Bind(SpecialSection, "Tombstone Base Damage",
             "Tombstone damage stat at level 1. Sets the damage of vengeful souls and launched tombstones.",
-            Presets(evenMoreBalanced: 12f, balancedMortician: 12f, original: 12f));
+            Presets(original: 12f, balancedMortician: 12f, evenMoreBalanced: 12f));
         TombstoneDamagePerLevel = Bind(SpecialSection, "Tombstone Damage Per Level",
             "Damage stat tombstones gain per level.",
-            Presets(evenMoreBalanced: 2.4f, balancedMortician: 2.4f, original: 2.4f));
+            Presets(original: 2.4f, balancedMortician: 2.4f, evenMoreBalanced: 2.4f));
         SoulOrbDamagePercent = Bind(SpecialSection, "Soul Orb Damage Percent",
             "Vengeful soul explosion damage, as a percent of the tombstone's damage stat.",
-            Presets(evenMoreBalanced: 200f, balancedMortician: 200f, original: 350f),
+            Presets(original: 350f, balancedMortician: 200f, evenMoreBalanced: 250f),
             note: SoulOrbDamageNote);
         TombstoneGhoulSpawnInterval = Bind(SpecialSection, "Ghoul Spawn Interval",
             "Seconds between ghouls raised by the tombstone.",
-            Presets(evenMoreBalanced: 10f, balancedMortician: 10f, original: 10f));
-        TombstoneLifetime = Bind(SpecialSection, "Tombstone Lifetime",
-            "Seconds a tombstone lasts before crumbling. 0 means it lasts until replaced or destroyed.",
-            Presets(evenMoreBalanced: 23f, balancedMortician: 0f, original: 0f));
+            Presets(original: 10f, balancedMortician: 10f, evenMoreBalanced: 10f));
 
         PresetSelector = new PresetSelector(config, preset, _presetSettings);
     }
 
-    private static PresetValues<T> Presets<T>(T evenMoreBalanced, T balancedMortician, T original) =>
-        new(evenMoreBalanced, balancedMortician, original);
+    public string[] SerializeLocalValues() => _presetSettings.Select(setting => setting.SerializedLocalValue).ToArray();
+
+    public bool TryUseHostValues(IReadOnlyList<string> hostValues)
+    {
+        if (hostValues.Count != _presetSettings.Count)
+            return false;
+
+        for (var i = 0; i < hostValues.Count; i++)
+            _presetSettings[i].UseHostValue(hostValues[i]);
+
+        return true;
+    }
+
+    public void UseLocalValues()
+    {
+        foreach (var setting in _presetSettings)
+            setting.UseLocalValue();
+    }
+
+    private static PresetValues<T> Presets<T>(T original, T balancedMortician, T evenMoreBalanced) =>
+        new(original, balancedMortician, evenMoreBalanced);
 
     private PresetSetting<T> Bind<T>(string section, string key, string summary, PresetValues<T> presets, string vanilla = null, string note = null)
     {

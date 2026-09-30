@@ -1,8 +1,11 @@
 using BepInEx;
 using BepInEx.Logging;
+using EvenMoreBalancedMortician.Networking;
 using EvenMoreBalancedMortician.Patches;
 using Morris;
 using R2API;
+using R2API.Networking;
+using R2API.Utils;
 
 namespace EvenMoreBalancedMortician;
 
@@ -10,6 +13,8 @@ namespace EvenMoreBalancedMortician;
 [BepInDependency(MorrisPlugin.MODUID)]
 [BepInDependency(LanguageAPI.PluginGUID)]
 [BepInDependency(DeployableAPI.PluginGUID)]
+[BepInDependency(NetworkingAPI.PluginGUID)]
+[NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
 [BepInIncompatibility(BalancedMorticianGuid)]
 public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
 {
@@ -31,10 +36,11 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         ShovelDamageSourcePatch.Install(_settings.ShovelCountsAsPrimarySkill);
         GhoulEquipmentPatch.Install(_settings.GhoulsInheritEquipment);
         GhoulLimitPatch.Install(_settings.GhoulLimit);
-        TombstoneLifetimePatch.Install(_settings.TombstoneLifetime);
+        TombstoneDurationPatch.Install(_settings.TombstoneDuration);
 
         ApplySettings();
         _settings.PresetSelector.SettingsChanged += ApplySettings;
+        HostSettingsSync.Install(_settings, ApplySettings);
     }
 
     private void ApplySettings()

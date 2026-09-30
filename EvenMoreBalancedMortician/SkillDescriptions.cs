@@ -32,12 +32,12 @@ internal static class SkillDescriptions
             $"and <style=cIsHealing>heal {Number(settings.SacrificeHealPercent.Value)}% of your maximum health</style>.",
 
         [TokenPrefix + "SPECIAL_TOMBSTONE_DESCRIPTION"] =
-            $"Erect a tombstone{DescribeLifetime(settings.TombstoneLifetime.Value)} that spawns a ghoul every <style=cIsUtility>{Number(settings.TombstoneGhoulSpawnInterval.Value)} seconds</style>. " +
+            $"Erect a tombstone{DescribeDuration(settings.TombstoneDuration.Value)} that spawns a ghoul every <style=cIsUtility>{Number(settings.TombstoneGhoulSpawnInterval.Value)} seconds</style>. " +
             "Whenever a ghoul is slain, the tombstone generates an <style=cIsDamage>explosive</style> <style=cIsUtility>vengeful soul</style> " +
             $"which it will fire at a nearby enemy for {Damage(settings.SoulOrbDamagePercent.Value)}.",
     };
 
-    private static string DescribeLifetime(float seconds) => seconds > 0f
+    private static string DescribeDuration(float seconds) => seconds > 0f
         ? $" lasting <style=cIsUtility>{Number(seconds)} seconds</style>"
         : "";
 
