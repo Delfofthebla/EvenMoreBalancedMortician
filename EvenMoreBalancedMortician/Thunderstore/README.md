@@ -29,11 +29,11 @@ Choosing a preset overwrites every other setting with that preset's values.
 | Shovel Strike | Counts As Primary Skill Damage     | false     | true              | true             |
 |               | Swing Damage                       | 800%      | 360%              | 280%             |
 |               | Launch Damage                      | 350%      | 600%              | 350%             |
-| Raise Dead    | Ghoul Limit (0 = none)             | 0         | 0                 | 0                |
+| Raise Dead    | ***Ghoul Limit (0 = none)          | 0         | 0                 | 0                |
 |               | Ghoul Base Damage / Per Level      | 12 / 2.4  | 8 / 1.6           | 8 / 1.6          |
 |               | Bite Damage                        | 150%      | 150%              | 150%             |
 |               | Spit Damage                        | 100%      | 100%              | 100%             |
-|               | Ghouls Inherit Equipment           | true      | false             | false            |
+|               | **Aspect Inherit Chance            | 100%      | 0%                | 25%              |
 | Sacrifice     | Detonation Damage                  | 700%      | 925%              | 600%             |
 |               | Detonation Radius                  | 18        | 20                | 20               |
 |               | Heal                               | 15%       | 15%               | 10%              |
@@ -43,7 +43,9 @@ Choosing a preset overwrites every other setting with that preset's values.
 |               | Ghoul Spawn Interval (seconds)     | 10        | 10                | 10               |
 
 
-This mod's Ghoul Limit setting replaces the one in Mortician's own config. The base mod's setting is ignored while this mod is enabled.
+\*\*In the base mod, Ghouls each inherit your equipment slot item but do not use it. The most likely intention for this is so that the ghouls may obtain Elite Aspects. The BalancedMortician mod author felt this was too powerful (or perhaps thought it was items rather than just equipment) and so they disabled this functionality entirely. My mod overrides the base mod's behavior and gives you a more nuanced configuration option that is capable of supporting non-equipment based or otherwise mod-added aspects such as those from [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/) (Specifically, any equipment or normal item with "Aspect" in its name) With my preset, ghouls have a 25% chance to inherit your aspect item(s), rolled individually for each. The more aspects you have, the more likely at least one will be inherited. This is a compromise between the two other presets, and I feel it is a good balance between the two extremes.**
+
+\*\*\*This mod's Ghoul Limit setting replaces the one in Mortician's own config. The base mod's setting is ignored while this mod is enabled.
 
 ## Multiplayer
 

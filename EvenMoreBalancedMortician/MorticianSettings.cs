@@ -46,7 +46,7 @@ internal sealed class MorticianSettings
     public PresetSetting<float> GhoulDamagePerLevel { get; }
     public PresetSetting<float> GhoulBiteDamagePercent { get; }
     public PresetSetting<float> GhoulSpitDamagePercent { get; }
-    public PresetSetting<bool> GhoulsInheritEquipment { get; }
+    public PresetSetting<float> GhoulAspectInheritChance { get; }
 
     public PresetSetting<float> SacrificeDamagePercent { get; }
     public PresetSetting<float> SacrificeRadius { get; }
@@ -130,9 +130,10 @@ internal sealed class MorticianSettings
             "Ghoul bile spit damage as a percent of the ghoul's damage stat.",
             Presets(original: 100f, balancedMortician: 100f, evenMoreBalanced: 100f),
             note: GhoulDamageNote);
-        GhoulsInheritEquipment = Bind(SecondarySection, "Ghouls Inherit Equipment",
-            "Whether newly raised ghouls copy Mortician's equipment. (Ghouls never copy his items)",
-            Presets(original: true, balancedMortician: false, evenMoreBalanced: false));
+        GhoulAspectInheritChance = Bind(SecondarySection, "Aspect Inherit Chance Percent",
+            "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once; aspect items roll once per stack. 0 disables. Ghouls never copy any other items or equipment.",
+            Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 25f),
+            note: "Aspect items are any item with \"Aspect\" in its name, such as ZetAspects' aspect items. The Original preset matches the base mod for aspect equipment, but the base mod never passed on aspect items.");
 
         SacrificeDamagePercent = Bind(UtilitySection, "Detonation Damage Percent",
             "Damage of a sacrificed ghoul's explosion, as a percent of the ghoul's damage stat.",

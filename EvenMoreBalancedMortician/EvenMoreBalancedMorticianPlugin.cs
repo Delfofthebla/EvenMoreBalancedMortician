@@ -34,7 +34,8 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         _settings = new MorticianSettings(Config);
 
         ShovelDamageSourcePatch.Install(_settings.ShovelCountsAsPrimarySkill);
-        GhoulEquipmentPatch.Install(_settings.GhoulsInheritEquipment);
+        GhoulEquipmentPatch.Install();
+        GhoulAspectPatch.Install(_settings.GhoulAspectInheritChance);
         GhoulLimitPatch.Install(_settings.GhoulLimit);
         TombstoneDurationPatch.Install(_settings.TombstoneDuration);
 

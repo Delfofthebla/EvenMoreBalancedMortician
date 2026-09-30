@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Reflection;
-using EvenMoreBalancedMortician.Presets;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -14,40 +13,30 @@ internal static class GhoulEquipmentPatch
 {
     private const BindingFlags AnyInstanceMethod = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-    private static readonly List<ILHook> hooks = new();
-    private static PresetSetting<bool> ghoulsInheritEquipment;
+    private static readonly List<ILHook> _hooks = [];
 
-    public static void Install(PresetSetting<bool> inheritEquipment)
+    public static void Install()
     {
-        ghoulsInheritEquipment = inheritEquipment;
-
-        PatchEquipmentCopy(typeof(SpawnGhoul).GetMethod(nameof(SpawnGhoul.AttemptSpawnGhoul), AnyInstanceMethod));
-        PatchEquipmentCopy(typeof(TombstoneController).GetMethod(nameof(TombstoneController.SpawnGhoulAtClosestNode), AnyInstanceMethod));
+        RemoveEquipmentCopy(typeof(SpawnGhoul).GetMethod(nameof(SpawnGhoul.AttemptSpawnGhoul), AnyInstanceMethod));
+        RemoveEquipmentCopy(typeof(TombstoneController).GetMethod(nameof(TombstoneController.SpawnGhoulAtClosestNode), AnyInstanceMethod));
     }
 
-    private static void PatchEquipmentCopy(MethodInfo ghoulSpawner)
+    private static void RemoveEquipmentCopy(MethodInfo ghoulSpawner)
     {
-        hooks.Add(new ILHook(ghoulSpawner, MakeEquipmentCopyConditional));
+        _hooks.Add(new ILHook(ghoulSpawner, RemoveEquipmentCopyCall));
     }
 
-    private static void MakeEquipmentCopyConditional(ILContext il)
+    private static void RemoveEquipmentCopyCall(ILContext il)
     {
         var cursor = new ILCursor(il);
         if (!cursor.TryGotoNext(instruction => instruction.MatchCallvirt<Inventory>(nameof(Inventory.CopyEquipmentFrom))))
         {
-            EvenMoreBalancedMorticianPlugin.Log.LogError($"Could not find the equipment copy in {il.Method.Name}; ghouls will always inherit equipment.");
+            EvenMoreBalancedMorticianPlugin.Log.LogError($"Could not find the equipment copy in {il.Method.Name}; ghouls will still copy Mortician's equipment.");
             return;
         }
 
         cursor.Remove();
-        cursor.EmitDelegate<System.Action<Inventory, Inventory>>(CopyEquipmentIfEnabled);
-    }
-
-    private static void CopyEquipmentIfEnabled(Inventory ghoulInventory, Inventory ownerInventory)
-    {
-        if (!ghoulsInheritEquipment.Value)
-            return;
-
-        ghoulInventory.CopyEquipmentFrom(ownerInventory, includeChargeData: false);
+        cursor.Emit(OpCodes.Pop);
+        cursor.Emit(OpCodes.Pop);
     }
 }
