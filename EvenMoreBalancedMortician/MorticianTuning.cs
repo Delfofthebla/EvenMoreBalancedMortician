@@ -3,6 +3,7 @@ using EvenMoreBalancedMortician.Presets;
 using Morris;
 using Morris.Components;
 using RoR2;
+using RoR2.Projectile;
 using SkillStates.Ghoul;
 using SkillStates.Morris;
 using SkillStates.SharedStates;
@@ -22,6 +23,7 @@ internal static class MorticianTuning
         GhoulMelee.damageCoefficient = AsCoefficient(settings.GhoulBiteDamagePercent);
         ClingState.damageCoefficient = AsCoefficient(settings.GhoulBiteDamagePercent);
         BileSpit.damageCoefficient = AsCoefficient(settings.GhoulSpitDamagePercent);
+        ApplySpitProcCoefficient(settings);
         ApplyToBodies(
             "Ghoul",
             MorrisPlugin.GhoulBodyPrefab,
@@ -40,6 +42,18 @@ internal static class MorticianTuning
         );
         TombstoneController.soulOrbDamage = AsCoefficient(settings.SoulOrbDamagePercent);
         TombstoneController.spawnTime = settings.TombstoneGhoulSpawnInterval.Value;
+    }
+
+    private static void ApplySpitProcCoefficient(MorticianSettings settings)
+    {
+        var spitProjectile = BileSpit.spitPrefab ? BileSpit.spitPrefab.GetComponent<ProjectileController>() : null;
+        if (!spitProjectile)
+        {
+            EvenMoreBalancedMorticianPlugin.Log.LogError("Ghoul spit projectile not found; its proc coefficient was not applied.");
+            return;
+        }
+
+        spitProjectile.procCoefficient = settings.GhoulSpitProcCoefficient.Value;
     }
 
     private static void ApplyMorticianStats(CharacterBody body, MorticianSettings settings)

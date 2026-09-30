@@ -25,6 +25,8 @@ internal sealed class MorticianSettings
         "Scales with the launched ghoul's or tombstone's damage stat, not Mortician's. Uses Mortician's crit chance and on-hit items.";
     private const string SoulOrbDamageNote =
         "Scales with the tombstone's damage stat (" + SpecialSection + "), not Mortician's. Uses the tombstone's crit chance and items, which it copies from Mortician when placed.";
+    private const string ProcCoefficientVanilla =
+        "Most survivor attacks use 1.0. Rapid multi-hit attacks use less, such as MUL-T's nailgun at 0.6.";
 
     public PresetSelector PresetSelector { get; }
 
@@ -40,15 +42,20 @@ internal sealed class MorticianSettings
     public PresetSetting<bool> ShovelCountsAsPrimarySkill { get; }
     public PresetSetting<float> ShovelDamagePercent { get; }
     public PresetSetting<float> LaunchDamagePercent { get; }
+    public PresetSetting<float> LaunchProcCoefficient { get; }
 
     public PresetSetting<int> GhoulLimit { get; }
     public PresetSetting<float> GhoulBaseDamage { get; }
     public PresetSetting<float> GhoulDamagePerLevel { get; }
     public PresetSetting<float> GhoulBiteDamagePercent { get; }
+    public PresetSetting<float> GhoulBiteProcCoefficient { get; }
+    public PresetSetting<float> GhoulClingBiteProcCoefficient { get; }
     public PresetSetting<float> GhoulSpitDamagePercent { get; }
+    public PresetSetting<float> GhoulSpitProcCoefficient { get; }
     public PresetSetting<float> GhoulAspectInheritChance { get; }
 
     public PresetSetting<float> SacrificeDamagePercent { get; }
+    public PresetSetting<float> SacrificeProcCoefficient { get; }
     public PresetSetting<float> SacrificeRadius { get; }
     public PresetSetting<float> SacrificeHealPercent { get; }
 
@@ -56,6 +63,7 @@ internal sealed class MorticianSettings
     public PresetSetting<float> TombstoneBaseDamage { get; }
     public PresetSetting<float> TombstoneDamagePerLevel { get; }
     public PresetSetting<float> SoulOrbDamagePercent { get; }
+    public PresetSetting<float> SoulOrbProcCoefficient { get; }
     public PresetSetting<float> TombstoneGhoulSpawnInterval { get; }
 
     public MorticianSettings(ConfigFile config)
@@ -111,6 +119,10 @@ internal sealed class MorticianSettings
             "Damage a ghoul or tombstone deals when flung through enemies by your shovel, as a percent of their own damage stats.",
             Presets(original: 350f, balancedMortician: 600f, evenMoreBalanced: 350f),
             note: LaunchDamageNote);
+        LaunchProcCoefficient = Bind(PrimarySection, "Launch Proc Coefficient",
+            "How strongly each hit from a launched ghoul or tombstone triggers Mortician's on-hit items. 1.0 is full strength.",
+            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 1f),
+            vanilla: ProcCoefficientVanilla);
 
         GhoulLimit = Bind(SecondarySection, "Ghoul Limit",
             "Maximum number of ghouls Mortician can have at once; raising another kills the oldest. 0 means no limit.",
@@ -126,10 +138,22 @@ internal sealed class MorticianSettings
             "Ghoul bite damage as a percent of the ghoul's damage stat.",
             Presets(original: 150f, balancedMortician: 150f, evenMoreBalanced: 150f),
             note: GhoulDamageNote);
+        GhoulBiteProcCoefficient = Bind(SecondarySection, "Bite Proc Coefficient",
+            "How strongly each regular ghoul bite triggers Mortician's on-hit items. 1.0 is full strength.",
+            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 0.5f),
+            vanilla: ProcCoefficientVanilla);
+        GhoulClingBiteProcCoefficient = Bind(SecondarySection, "Cling Bite Proc Coefficient",
+            "How strongly each bite from a clinging ghoul triggers Mortician's on-hit items. 1.0 is full strength. A ghoul launched into a large enemy latches on and bites it every 0.7 seconds.",
+            Presets(original: 0.8f, balancedMortician: 0.8f, evenMoreBalanced: 0.4f),
+            vanilla: ProcCoefficientVanilla);
         GhoulSpitDamagePercent = Bind(SecondarySection, "Spit Damage Percent",
             "Ghoul bile spit damage as a percent of the ghoul's damage stat.",
             Presets(original: 100f, balancedMortician: 100f, evenMoreBalanced: 100f),
             note: GhoulDamageNote);
+        GhoulSpitProcCoefficient = Bind(SecondarySection, "Spit Proc Coefficient",
+            "How strongly each ghoul bile spit triggers Mortician's on-hit items. 1.0 is full strength.",
+            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 0.5f),
+            vanilla: ProcCoefficientVanilla);
         GhoulAspectInheritChance = Bind(SecondarySection, "Aspect Inherit Chance Percent",
             "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once; aspect items roll once per stack. 0 disables. Ghouls never copy any other items or equipment.",
             Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 25f),
@@ -139,6 +163,10 @@ internal sealed class MorticianSettings
             "Damage of a sacrificed ghoul's explosion, as a percent of the ghoul's damage stat.",
             Presets(original: 700f, balancedMortician: 925f, evenMoreBalanced: 600f),
             note: GhoulDamageNote);
+        SacrificeProcCoefficient = Bind(UtilitySection, "Detonation Proc Coefficient",
+            "How strongly a sacrificed ghoul's explosion triggers Mortician's on-hit items, against every enemy it hits. 1.0 is full strength.",
+            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 1f),
+            vanilla: ProcCoefficientVanilla);
         SacrificeRadius = Bind(UtilitySection, "Detonation Radius",
             "Radius of a sacrificed ghoul's explosion, in meters.",
             Presets(original: 18f, balancedMortician: 20f, evenMoreBalanced: 20f));
@@ -159,6 +187,11 @@ internal sealed class MorticianSettings
             "Vengeful soul explosion damage, as a percent of the tombstone's damage stat.",
             Presets(original: 350f, balancedMortician: 200f, evenMoreBalanced: 250f),
             note: SoulOrbDamageNote);
+        SoulOrbProcCoefficient = Bind(SpecialSection, "Soul Orb Proc Coefficient",
+            "How strongly each vengeful soul explosion triggers on-hit items. 1.0 is full strength.",
+            Presets(original: 0.2f, balancedMortician: 0.2f, evenMoreBalanced: 0.2f),
+            vanilla: ProcCoefficientVanilla,
+            note: "Triggers the tombstone's items, which it copies from Mortician when placed, not Mortician's own.");
         TombstoneGhoulSpawnInterval = Bind(SpecialSection, "Ghoul Spawn Interval",
             "Seconds between ghouls raised by the tombstone.",
             Presets(original: 10f, balancedMortician: 10f, evenMoreBalanced: 10f));

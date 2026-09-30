@@ -29,17 +29,23 @@ Choosing a preset overwrites every other setting with that preset's values.
 | Shovel Strike | Counts As Primary Skill Damage     | false     | true              | true             |
 |               | Swing Damage                       | 800%      | 360%              | 280%             |
 |               | Launch Damage                      | 350%      | 600%              | 350%             |
+|               | Launch Proc Coefficient            | 1.0       | 1.0               | 1.0              |
 | Raise Dead    | ***Ghoul Limit (0 = none)          | 0         | 0                 | 0                |
 |               | Ghoul Base Damage / Per Level      | 12 / 2.4  | 8 / 1.6           | 8 / 1.6          |
 |               | Bite Damage                        | 150%      | 150%              | 150%             |
+|               | Bite Proc Coefficient              | 1.0       | 1.0               | 0.7              |
+|               | Cling Bite Proc Coefficient        | 0.8       | 0.8               | 0.5              |
 |               | Spit Damage                        | 100%      | 100%              | 100%             |
+|               | Spit Proc Coefficient              | 1.0       | 1.0               | 0.7              |
 |               | **Aspect Inherit Chance            | 100%      | 0%                | 25%              |
 | Sacrifice     | Detonation Damage                  | 700%      | 925%              | 600%             |
+|               | Detonation Proc Coefficient        | 1.0       | 1.0               | 1.0              |
 |               | Detonation Radius                  | 18        | 20                | 20               |
 |               | Heal                               | 15%       | 15%               | 10%              |
 | Tombstone     | Tombstone Duration (0 = unlimited) | 0         | 0                 | 23               |
 |               | Tombstone Base Damage / Per Level  | 12 / 2.4  | 12 / 2.4          | 12 / 2.4         |
 |               | Soul Orb Damage                    | 350%      | 200%              | 250%             |
+|               | Soul Orb Proc Coefficient          | 0.2       | 0.2               | 0.3              |
 |               | Ghoul Spawn Interval (seconds)     | 10        | 10                | 10               |
 
 
