@@ -5,17 +5,22 @@
         <ThunderstorePackageName>Even_More_Balanced_Mortician</ThunderstorePackageName>
         <Author>Delfofthebla</Author>
         <Version>1.0.0</Version>
+        <!-- R2API depends on MMHOOK.RoR2, which only ships .NET Framework builds; this mod never references it. -->
+        <NoWarn>$(NoWarn);NU1701</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3"/>
+        <PackageReference Include="BepInEx.Core" Version="5.4.21"/>
+        <PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0"/>
+        <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" IncludeAssets="compile"/>
+        <PackageReference Include="R2API.Core" Version="5.3.0"/>
+        <PackageReference Include="R2API.Deployable" Version="1.0.1"/>
+        <PackageReference Include="R2API.Language" Version="1.1.0"/>
+        <PackageReference Include="R2API.Networking" Version="1.0.4"/>
     </ItemGroup>
 
     <ItemGroup>
         <Reference Include="Morris" HintPath="$(ProfilePluginsDir)\Bog-Mortician\Morris.dll" Publicize="true"/>
-        <Reference Include="R2API.Core" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Core\R2API.Core\R2API.Core.dll"/>
-        <Reference Include="R2API.Deployable" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Deployable\R2API.Deployable\R2API.Deployable.dll"/>
-        <Reference Include="R2API.Language" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Language\R2API.Language\R2API.Language.dll"/>
-        <Reference Include="R2API.Networking" HintPath="$(ProfilePluginsDir)\RiskofThunder-R2API_Networking\R2API.Networking\R2API.Networking.dll"/>
     </ItemGroup>
 </Project>
