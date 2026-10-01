@@ -4,6 +4,7 @@ using EvenMoreBalancedMortician.Presets;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
+using Morris.Modules.NPC;
 using R2API;
 using RoR2;
 using MorticianConfig = Morris.Modules.Config;
@@ -22,9 +23,24 @@ internal static class GhoulLimitPatch
     {
         _ghoulLimit = limit;
         MorticianSurvivor.ghoulSlot = DeployableAPI.RegisterDeployableSlot(GetGhoulLimit);
+        EnsureGhoulsAreDeployable();
 
         var minionStart = typeof(MorrisMinionController).GetMethod("Start", BindingFlags.Instance | BindingFlags.NonPublic);
         _minionStartHook = new ILHook(minionStart, AlwaysTrackGhoulsAsDeployables);
+    }
+
+    // Mortician only gives the ghoul master a Deployable when its own config limit was positive at load, and the forced tracking below needs one.
+    private static void EnsureGhoulsAreDeployable()
+    {
+        var ghoulMaster = GhoulMinion.ghoulMasterPrefab;
+        if (!ghoulMaster)
+        {
+            EvenMoreBalancedMorticianPlugin.Log.LogError("Ghoul master prefab not found; the Ghoul Limit setting will not work.");
+            return;
+        }
+
+        if (!ghoulMaster.GetComponent<Deployable>())
+            ghoulMaster.AddComponent<Deployable>();
     }
 
     private static int GetGhoulLimit(CharacterMaster master, int deployableCountMultiplier)

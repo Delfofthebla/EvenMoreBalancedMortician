@@ -4,6 +4,7 @@ using Morris;
 using Morris.Components;
 using RoR2;
 using RoR2.Projectile;
+using RoR2.Skills;
 using SkillStates.Ghoul;
 using SkillStates.Morris;
 using SkillStates.SharedStates;
@@ -16,6 +17,7 @@ internal static class MorticianTuning
     public static void Apply(MorticianSettings settings)
     {
         ApplyToBodies("Mortician", MorrisPlugin.MorrisBodyPrefab, MorrisPlugin.MorrisBodyIndex, body => ApplyMorticianStats(body, settings));
+        ApplyCooldowns(settings);
 
         SwingShovel.damageCoefficient = AsCoefficient(settings.ShovelDamagePercent);
         BaseLaunchedState.damageCoefficient = AsCoefficient(settings.LaunchDamagePercent);
@@ -28,7 +30,7 @@ internal static class MorticianTuning
             "Ghoul",
             MorrisPlugin.GhoulBodyPrefab,
             MorrisPlugin.GhoulBodyIndex,
-            body => ApplyDamageStats(body, settings.GhoulBaseDamage, settings.GhoulDamagePerLevel)
+            body => ApplyGhoulStats(body, settings)
         );
 
         GhoulDeath.sacrificedDamageCoefficient = AsCoefficient(settings.SacrificeDamagePercent);
@@ -42,6 +44,42 @@ internal static class MorticianTuning
         );
         TombstoneController.soulOrbDamage = AsCoefficient(settings.SoulOrbDamagePercent);
         TombstoneController.spawnTime = settings.TombstoneGhoulSpawnInterval.Value;
+    }
+
+    private static void ApplyCooldowns(MorticianSettings settings)
+    {
+        var skills = MorrisPlugin.MorrisBodyPrefab ? MorrisPlugin.MorrisBodyPrefab.GetComponent<SkillLocator>() : null;
+        if (!skills)
+        {
+            EvenMoreBalancedMorticianPlugin.Log.LogError("Mortician skill locator not found; cooldowns were not applied.");
+            return;
+        }
+
+        SetCooldown(skills.secondary, settings.RaiseDeadCooldown);
+        SetCooldown(skills.utility, settings.SacrificeCooldown);
+        SetCooldown(skills.special, settings.TombstoneCooldown);
+
+        if (MorrisPlugin.MorrisBodyIndex == BodyIndex.None)
+            return;
+
+        foreach (var body in CharacterBody.readOnlyInstancesList)
+        {
+            if (body.bodyIndex == MorrisPlugin.MorrisBodyIndex)
+                RefreshCooldowns(body.skillLocator);
+        }
+    }
+
+    private static void SetCooldown(GenericSkill skillSlot, PresetSetting<float> cooldown)
+    {
+        foreach (var variant in skillSlot.skillFamily.variants)
+            variant.skillDef.baseRechargeInterval = cooldown.Value;
+    }
+
+    private static void RefreshCooldowns(SkillLocator skills)
+    {
+        skills.secondary.RecalculateValues();
+        skills.utility.RecalculateValues();
+        skills.special.RecalculateValues();
     }
 
     private static void ApplySpitProcCoefficient(MorticianSettings settings)
@@ -66,6 +104,13 @@ internal static class MorticianTuning
         body.levelArmor = settings.ArmorPerLevel.Value;
         body.baseDamage = settings.BaseDamage.Value;
         body.levelDamage = settings.DamagePerLevel.Value;
+    }
+
+    private static void ApplyGhoulStats(CharacterBody body, MorticianSettings settings)
+    {
+        ApplyDamageStats(body, settings.GhoulBaseDamage, settings.GhoulDamagePerLevel);
+        body.baseRegen = -settings.GhoulDegen.Value;
+        body.levelRegen = -settings.GhoulDegenPerLevel.Value;
     }
 
     private static void ApplyDamageStats(CharacterBody body, PresetSetting<float> baseDamage, PresetSetting<float> damagePerLevel)

@@ -44,9 +44,12 @@ internal sealed class MorticianSettings
     public PresetSetting<float> LaunchDamagePercent { get; }
     public PresetSetting<float> LaunchProcCoefficient { get; }
 
+    public PresetSetting<float> RaiseDeadCooldown { get; }
     public PresetSetting<int> GhoulLimit { get; }
     public PresetSetting<float> GhoulBaseDamage { get; }
     public PresetSetting<float> GhoulDamagePerLevel { get; }
+    public PresetSetting<float> GhoulDegen { get; }
+    public PresetSetting<float> GhoulDegenPerLevel { get; }
     public PresetSetting<float> GhoulBiteDamagePercent { get; }
     public PresetSetting<float> GhoulBiteProcCoefficient { get; }
     public PresetSetting<float> GhoulClingBiteProcCoefficient { get; }
@@ -54,11 +57,13 @@ internal sealed class MorticianSettings
     public PresetSetting<float> GhoulSpitProcCoefficient { get; }
     public PresetSetting<float> GhoulAspectInheritChance { get; }
 
+    public PresetSetting<float> SacrificeCooldown { get; }
     public PresetSetting<float> SacrificeDamagePercent { get; }
     public PresetSetting<float> SacrificeProcCoefficient { get; }
     public PresetSetting<float> SacrificeRadius { get; }
     public PresetSetting<float> SacrificeHealPercent { get; }
 
+    public PresetSetting<float> TombstoneCooldown { get; }
     public PresetSetting<float> TombstoneDuration { get; }
     public PresetSetting<float> TombstoneBaseDamage { get; }
     public PresetSetting<float> TombstoneDamagePerLevel { get; }
@@ -117,13 +122,16 @@ internal sealed class MorticianSettings
             Presets(original: 800f, balancedMortician: 360f, evenMoreBalanced: 280f));
         LaunchDamagePercent = Bind(PrimarySection, "Launch Damage Percent",
             "Damage a ghoul or tombstone deals when flung through enemies by your shovel, as a percent of their own damage stats.",
-            Presets(original: 350f, balancedMortician: 600f, evenMoreBalanced: 350f),
+            Presets(original: 350f, balancedMortician: 600f, evenMoreBalanced: 360f),
             note: LaunchDamageNote);
         LaunchProcCoefficient = Bind(PrimarySection, "Launch Proc Coefficient",
             "How strongly each hit from a launched ghoul or tombstone triggers Mortician's on-hit items. 1.0 is full strength.",
             Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 1f),
             vanilla: ProcCoefficientVanilla);
 
+        RaiseDeadCooldown = Bind(SecondarySection, "Cooldown",
+            "Seconds Raise Dead takes to recharge one of its 2 charges. Cooldown reduction items still apply.",
+            Presets(original: 7f, balancedMortician: 7f, evenMoreBalanced: 7f));
         GhoulLimit = Bind(SecondarySection, "Ghoul Limit",
             "Maximum number of ghouls Mortician can have at once; raising another kills the oldest. 0 means no limit.",
             Presets(original: 0, balancedMortician: 0, evenMoreBalanced: 0),
@@ -134,17 +142,24 @@ internal sealed class MorticianSettings
         GhoulDamagePerLevel = Bind(SecondarySection, "Ghoul Damage Per Level",
             "Damage ghouls gain per level.",
             Presets(original: 2.4f, balancedMortician: 1.6f, evenMoreBalanced: 1.6f));
+        GhoulDegen = Bind(SecondarySection, "Ghoul Degen",
+            "Health each ghoul loses per second at level 1. 0 means ghouls never decay.",
+            Presets(original: 10f, balancedMortician: 10f, evenMoreBalanced: 10f),
+            note: "Ghouls start with 150 health and gain 45 per level, so the original values give every ghoul about 15 seconds to live at any level.");
+        GhoulDegenPerLevel = Bind(SecondarySection, "Ghoul Degen Per Level",
+            "Health lost per second that ghouls gain per level.",
+            Presets(original: 3f, balancedMortician: 3f, evenMoreBalanced: 3f));
         GhoulBiteDamagePercent = Bind(SecondarySection, "Bite Damage Percent",
             "Ghoul bite damage as a percent of the ghoul's damage stat.",
             Presets(original: 150f, balancedMortician: 150f, evenMoreBalanced: 150f),
             note: GhoulDamageNote);
         GhoulBiteProcCoefficient = Bind(SecondarySection, "Bite Proc Coefficient",
             "How strongly each regular ghoul bite triggers Mortician's on-hit items. 1.0 is full strength.",
-            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 0.5f),
+            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 1f),
             vanilla: ProcCoefficientVanilla);
         GhoulClingBiteProcCoefficient = Bind(SecondarySection, "Cling Bite Proc Coefficient",
             "How strongly each bite from a clinging ghoul triggers Mortician's on-hit items. 1.0 is full strength. A ghoul launched into a large enemy latches on and bites it every 0.7 seconds.",
-            Presets(original: 0.8f, balancedMortician: 0.8f, evenMoreBalanced: 0.4f),
+            Presets(original: 0.8f, balancedMortician: 0.8f, evenMoreBalanced: 0.8f),
             vanilla: ProcCoefficientVanilla);
         GhoulSpitDamagePercent = Bind(SecondarySection, "Spit Damage Percent",
             "Ghoul bile spit damage as a percent of the ghoul's damage stat.",
@@ -152,16 +167,19 @@ internal sealed class MorticianSettings
             note: GhoulDamageNote);
         GhoulSpitProcCoefficient = Bind(SecondarySection, "Spit Proc Coefficient",
             "How strongly each ghoul bile spit triggers Mortician's on-hit items. 1.0 is full strength.",
-            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 0.5f),
+            Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 0.7f),
             vanilla: ProcCoefficientVanilla);
         GhoulAspectInheritChance = Bind(SecondarySection, "Aspect Inherit Chance Percent",
             "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once; aspect items roll once per stack. 0 disables. Ghouls never copy any other items or equipment.",
             Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 25f),
             note: "Aspect items are any item with \"Aspect\" in its name, such as ZetAspects' aspect items. The Original preset matches the base mod for aspect equipment, but the base mod never passed on aspect items.");
 
+        SacrificeCooldown = Bind(UtilitySection, "Cooldown",
+            "Seconds Sacrifice takes to recharge. Cooldown reduction items still apply.",
+            Presets(original: 6f, balancedMortician: 6f, evenMoreBalanced: 6f));
         SacrificeDamagePercent = Bind(UtilitySection, "Detonation Damage Percent",
             "Damage of a sacrificed ghoul's explosion, as a percent of the ghoul's damage stat.",
-            Presets(original: 700f, balancedMortician: 925f, evenMoreBalanced: 600f),
+            Presets(original: 700f, balancedMortician: 925f, evenMoreBalanced: 880f),
             note: GhoulDamageNote);
         SacrificeProcCoefficient = Bind(UtilitySection, "Detonation Proc Coefficient",
             "How strongly a sacrificed ghoul's explosion triggers Mortician's on-hit items, against every enemy it hits. 1.0 is full strength.",
@@ -174,9 +192,14 @@ internal sealed class MorticianSettings
             "Percent of Mortician's maximum health healed by each Sacrifice.",
             Presets(original: 15f, balancedMortician: 15f, evenMoreBalanced: 10f));
 
+        TombstoneCooldown = Bind(SpecialSection, "Cooldown",
+            "Seconds Tombstone takes to recharge. Cooldown reduction items still apply.",
+            Presets(original: 30f, balancedMortician: 30f, evenMoreBalanced: 30f),
+            vanilla: "Engineer's turrets 30.",
+            note: "Tombstone Duration does not follow this; adjust it separately.");
         TombstoneDuration = Bind(SpecialSection, "Tombstone Duration",
             "Seconds a tombstone lasts before crumbling. 0 means it lasts until replaced or destroyed.",
-            Presets(original: 0f, balancedMortician: 0f, evenMoreBalanced: 23f));
+            Presets(original: 0f, balancedMortician: 0f, evenMoreBalanced: 30f));
         TombstoneBaseDamage = Bind(SpecialSection, "Tombstone Base Damage",
             "Tombstone damage stat at level 1. Sets the damage of vengeful souls and launched tombstones.",
             Presets(original: 12f, balancedMortician: 12f, evenMoreBalanced: 12f));
