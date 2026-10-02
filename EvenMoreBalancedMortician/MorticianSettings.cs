@@ -98,11 +98,11 @@ internal sealed class MorticianSettings
 
         BaseHealth = Bind(BaseStatsSection, "Base Health",
             "Mortician's maximum health at level 1.",
-            Presets(original: 200f, balancedMortician: 200f, evenMoreBalanced: 170f),
+            Presets(original: 200f, balancedMortician: 200f, evenMoreBalanced: 180f),
             vanilla: "Most survivors sit at 110. Loader and Acrid 160. MUL-T 200.");
         HealthPerLevel = Bind(BaseStatsSection, "Health Per Level",
             "Maximum health Mortician gains per level.",
-            Presets(original: 66f, balancedMortician: 66f, evenMoreBalanced: 51f),
+            Presets(original: 66f, balancedMortician: 66f, evenMoreBalanced: 54f),
             vanilla: "Every survivor gains 30% of their base health, so 33 for a 110 health survivor.");
         BaseRegen = Bind(BaseStatsSection, "Base Regen",
             "Health Mortician regenerates per second at level 1.",
@@ -134,7 +134,7 @@ internal sealed class MorticianSettings
             Presets(original: false, balancedMortician: true, evenMoreBalanced: true));
         ShovelDamagePercent = Bind(PrimarySection, "Swing Damage Percent",
             "Shovel swing damage, as a percent of Mortician's damage stat.",
-            Presets(original: 800f, balancedMortician: 360f, evenMoreBalanced: 280f));
+            Presets(original: 800f, balancedMortician: 360f, evenMoreBalanced: 340f));
         LaunchDamagePercent = Bind(PrimarySection, "Launch Damage Percent",
             "Damage a ghoul or tombstone deals when flung through enemies by your shovel, as a percent of their own damage stats.",
             Presets(original: 350f, balancedMortician: 600f, evenMoreBalanced: 400f),
@@ -192,7 +192,7 @@ internal sealed class MorticianSettings
             vanilla: ProcCoefficientVanilla);
         GhoulAspectInheritChance = Bind(SecondarySection, "Aspect Inherit Chance Percent",
             "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once. Aspect items roll once for every copy you hold, and each success passes on one copy. 0 disables. Ghouls never copy any other items or equipment.",
-            Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 25f),
+            Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 33f),
             note: "Aspect items are any item with \"Aspect\" in its name, such as ZetAspects' aspect items. The Original preset matches the base mod for aspect equipment, but the base mod never passed on aspect items.");
 
         SacrificeCooldown = Bind(UtilitySection, "Cooldown",
@@ -219,7 +219,7 @@ internal sealed class MorticianSettings
         TombstoneCooldown = Bind(SpecialSection, "Cooldown",
             "Seconds the Tombstone takes to recharge. Cooldown reduction items still apply.",
             Presets(original: 30f, balancedMortician: 30f, evenMoreBalanced: 30f),
-            vanilla: "Engineer's turrets 30.",
+            vanilla: "Engineer's turrets are 30.",
             note: "Tombstone Duration does not follow this; adjust it separately.");
         TombstoneDuration = Bind(SpecialSection, "Tombstone Duration",
             "Seconds a tombstone lasts before crumbling. 0 means it lasts until replaced or destroyed.",
@@ -243,7 +243,7 @@ internal sealed class MorticianSettings
             Presets(original: 2.4f, balancedMortician: 2.4f, evenMoreBalanced: 2.4f));
         SoulOrbDamagePercent = Bind(SpecialSection, "Soul Orb Damage Percent",
             "Vengeful soul explosion damage, as a percent of the tombstone's damage stat.",
-            Presets(original: 350f, balancedMortician: 200f, evenMoreBalanced: 250f),
+            Presets(original: 350f, balancedMortician: 200f, evenMoreBalanced: 280f),
             note: SoulOrbDamageNote);
         SoulOrbProcCoefficient = Bind(SpecialSection, "Soul Orb Proc Coefficient",
             "How strongly each vengeful soul explosion triggers on-hit items. 1.0 is full strength.",
@@ -260,7 +260,7 @@ internal sealed class MorticianSettings
             note: ScepterNote + " Neither Mortician nor BalancedMortician support the Ancient Scepter, so their presets leave it off.");
         RestlessGraveRadius = Bind(ScepterSection, "Raise Radius",
             "With the Ancient Scepter, enemies slain within this many meters of a tombstone rise as ghouls.",
-            Presets(original: 25f, balancedMortician: 25f, evenMoreBalanced: 25f),
+            Presets(original: 25f, balancedMortician: 25f, evenMoreBalanced: 30f),
             note: ScepterNote);
         RestlessGraveCooldown = Bind(ScepterSection, "Raise Cooldown",
             "Seconds after raising a ghoul before the same tombstone can raise another. Each tombstone has its own cooldown; a kill goes to the nearest tombstone in range that is ready.",

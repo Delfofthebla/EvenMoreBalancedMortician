@@ -33,12 +33,12 @@ immediately, and skill tooltips update to match.
 
 | Section                          | Setting                                    | Original  | BalancedMortician | EvenMoreBalanced |
 |----------------------------------|--------------------------------------------|-----------|-------------------|------------------|
-| Base Stats                       | Health / Per Level                         | 200 / 66  | 200 / 66          | 170 / 51         |
+| Base Stats                       | Health / Per Level                         | 200 / 66  | 200 / 66          | 180 / 54         |
 |                                  | Regen / Per Level                          | 2.5 / 0.5 | 2.5 / 0.5         | 2.5 / 0.5        |
 |                                  | Armor / Per Level                          | 20 / 0    | 20 / 0            | 20 / 0           |
 |                                  | Damage / Per Level                         | 12 / 2.4  | 12 / 2.4          | 12 / 2.4         |
 | Shovel Strike                    | Counts As Primary Skill Damage             | false     | true              | true             |
-|                                  | Swing Damage                               | 800%      | 360%              | 280%             |
+|                                  | Swing Damage                               | 800%      | 360%              | 340%             |
 |                                  | Launch Damage                              | 350%      | 600%              | 400%             |
 |                                  | Launch Proc Coefficient                    | 1.0       | 1.0               | 1.0              |
 | Raise Dead                       | Cooldown (seconds)                         | 7         | 7                 | 7                |
@@ -51,7 +51,7 @@ immediately, and skill tooltips update to match.
 |                                  | Cling Bite Proc Coefficient                | 0.8       | 0.8               | 0.8              |
 |                                  | Spit Damage                                | 100%      | 100%              | 100%             |
 |                                  | Spit Proc Coefficient                      | 1.0       | 1.0               | 0.7              |
-|                                  | Aspect Inherit Chance                      | 100%      | 0%                | 25%              |
+|                                  | Aspect Inherit Chance                      | 100%      | 0%                | 33%              |
 | Sacrifice                        | Cooldown (seconds)                         | 6         | 6                 | 6                |
 |                                  | Detonation Scales With Mortician           | false     | false             | true             |
 |                                  | Detonation Damage                          | 700%      | 925%              | 800%             |
@@ -63,11 +63,11 @@ immediately, and skill tooltips update to match.
 |                                  | Lysate Cell Adds Tombstone                 | false     | false             | true             |
 |                                  | Soul Recipient                             | -         | -                 | Nearest          |
 |                                  | Tombstone Base Damage / Per Level          | 12 / 2.4  | 12 / 2.4          | 12 / 2.4         |
-|                                  | Soul Orb Damage                            | 350%      | 200%              | 250%             |
+|                                  | Soul Orb Damage                            | 350%      | 200%              | 280%             |
 |                                  | Soul Orb Proc Coefficient                  | 0.2       | 0.2               | 0.2              |
 |                                  | Ghoul Spawn Interval (seconds)             | 10        | 10                | 10               |
 | Restless Grave (Ancient Scepter) | Enabled                                    | false     | false             | true             |
-|                                  | Raise Radius (meters)                      | -         | -                 | 25               |
+|                                  | Raise Radius (meters)                      | -         | -                 | 30               |
 |                                  | Raise Cooldown (seconds)                   | -         | -                 | 3                |
 |                                  | Risen Ghoul Limit Per Tombstone (0 = none) | -         | -                 | 0                |
 
@@ -92,7 +92,7 @@ like [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/) (any i
 3 of one aspect item and 1 of another gives 4 rolls, and each success passes on one copy. No other items or equipment
 are ever copied.
 
-The `EvenMoreBalanced` preset uses 25%, so the more aspects you carry, the more likely a ghoul inherits at least one. It's
+The `EvenMoreBalanced` preset uses 33%, so the more aspects you carry, the more likely a ghoul inherits at least one. It's
 a middle ground between the base mod's "always" and BalancedMortician's "never". The Original preset's 100% matches the
 base mod for equipment, but also passes on aspect items, which the base mod never did. If you do not use ZetAspects, you
 may want to increase this a little.

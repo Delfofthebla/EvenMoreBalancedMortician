@@ -11,12 +11,16 @@
 
 **Changed** (EvenMoreBalanced preset)
 
-Reverted a bunch of my prior nerfs in the preset after some more play with him. I was a bit too harsh on the survivability reduction.
+Walked back a bunch of my prior nerfs in the preset after some more play with him. I was a bit too harsh on the survivability and damage reductions. He is a melee survivor with zero mobility, after all.
+- Health / Per Level: 170 / 51 → 180 / 54
 - Armor: 10 → 20
 - Regen / Per Level: 1 / 0.2 → 2.5 / 0.5
-- Launch Damage: 360% → 400% (Mostly to hit the breakpoint for items that require 400%)
+- Shovel Damage: 280% → 340%
+- Launch Damage: 360% → 400% (Mostly just to hit the breakpoint for items that require 400%)
+- Aspect Inherit Chance: 25% → 33%
 - Detonation Damage: 880% of the ghoul's damage → 800% of Mortician's damage (Should help it scale better late game)
 - Heal: 10% → 15% (This nerf was silly of me)
+- Soul Orb Explosion: 250% → 280%
 
 **Fixed**
 - 1.1.0 reported itself as 1.0.0, so players on those two versions were not kept out of each other's lobbies. Unlikely to have happened to anyone but has been fixed regardless.
