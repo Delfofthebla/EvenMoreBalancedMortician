@@ -15,6 +15,7 @@
         <PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0"/>
         <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" IncludeAssets="compile"/>
         <PackageReference Include="R2API.Core" Version="5.3.0"/>
+        <PackageReference Include="R2API.ContentManagement" Version="1.0.11"/>
         <PackageReference Include="R2API.Deployable" Version="1.0.1"/>
         <PackageReference Include="R2API.Language" Version="1.1.0"/>
         <PackageReference Include="R2API.Networking" Version="1.0.4"/>
@@ -22,5 +23,6 @@
 
     <ItemGroup>
         <Reference Include="Morris" HintPath="$(ProfilePluginsDir)\Bog-Mortician\Morris.dll" Publicize="true"/>
+        <Reference Include="AncientScepter" HintPath="$(ProfilePluginsDir)\amogus_lovers-StandaloneAncientScepter\AncientScepter.dll" Publicize="true"/>
     </ItemGroup>
 </Project>

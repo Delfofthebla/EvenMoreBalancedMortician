@@ -18,6 +18,8 @@ internal sealed class MorticianSettings
     private const string SecondarySection = "Secondary - Raise Dead";
     private const string UtilitySection = "Utility - Sacrifice";
     private const string SpecialSection = "Special - Tombstone";
+    private const string ScepterSection = "Ancient Scepter - Restless Grave";
+    private const string VisualsSection = "Visuals";
 
     private const string GhoulDamageNote =
         "Scales with the ghoul's damage stat (" + SecondarySection + "), not Mortician's. Uses Mortician's crit chance and on-hit items.";
@@ -25,6 +27,7 @@ internal sealed class MorticianSettings
         "Scales with the launched ghoul's or tombstone's damage stat, not Mortician's. Uses Mortician's crit chance and on-hit items.";
     private const string SoulOrbDamageNote =
         "Scales with the tombstone's damage stat (" + SpecialSection + "), not Mortician's. Uses the tombstone's crit chance and items, which it copies from Mortician when placed.";
+    private const string ScepterNote = "Requires StandaloneAncientScepter.";
     private const string ProcCoefficientVanilla =
         "Most survivor attacks use 1.0. Rapid multi-hit attacks use less, such as MUL-T's nailgun at 0.6.";
 
@@ -75,6 +78,13 @@ internal sealed class MorticianSettings
     public PresetSetting<float> SoulOrbDamagePercent { get; }
     public PresetSetting<float> SoulOrbProcCoefficient { get; }
     public PresetSetting<float> TombstoneGhoulSpawnInterval { get; }
+
+    public PresetSetting<bool> RestlessGraveEnabled { get; }
+    public PresetSetting<float> RestlessGraveRadius { get; }
+    public PresetSetting<float> RestlessGraveCooldown { get; }
+    public PresetSetting<int> RestlessGraveRisenGhoulLimit { get; }
+
+    public ConfigEntry<bool> ShowRaiseRadius { get; }
 
     public MorticianSettings(ConfigFile config)
     {
@@ -243,6 +253,27 @@ internal sealed class MorticianSettings
         TombstoneGhoulSpawnInterval = Bind(SpecialSection, "Ghoul Spawn Interval",
             "Seconds between ghouls raised by the tombstone.",
             Presets(original: 10f, balancedMortician: 10f, evenMoreBalanced: 10f));
+
+        RestlessGraveEnabled = Bind(ScepterSection, "Enabled",
+            "Whether the Ancient Scepter upgrades Tombstone into Restless Grave. When off, the Scepter treats Mortician as a survivor it has no upgrade for, following its own config for unusable Scepters.",
+            Presets(original: false, balancedMortician: false, evenMoreBalanced: true),
+            note: ScepterNote + " Neither Mortician nor BalancedMortician support the Ancient Scepter, so their presets leave it off.");
+        RestlessGraveRadius = Bind(ScepterSection, "Raise Radius",
+            "With the Ancient Scepter, enemies slain within this many meters of a tombstone rise as ghouls.",
+            Presets(original: 25f, balancedMortician: 25f, evenMoreBalanced: 25f),
+            note: ScepterNote);
+        RestlessGraveCooldown = Bind(ScepterSection, "Raise Cooldown",
+            "Seconds after raising a ghoul before the same tombstone can raise another. Each tombstone has its own cooldown; a kill goes to the nearest tombstone in range that is ready.",
+            Presets(original: 3f, balancedMortician: 3f, evenMoreBalanced: 3f),
+            note: "Ghouls live about 15 seconds with the default ghoul health and degen, so each tombstone keeps roughly 15 divided by this many risen ghouls alive.");
+        RestlessGraveRisenGhoulLimit = Bind(ScepterSection, "Risen Ghoul Limit Per Tombstone",
+            "Maximum number of risen ghouls each tombstone can have alive at once. 0 means no limit.",
+            Presets(original: 0, balancedMortician: 0, evenMoreBalanced: 0),
+            note: "Risen ghouls also count toward the Ghoul Limit.");
+
+        ShowRaiseRadius = config.Bind(VisualsSection, "Show Raise Radius", true,
+            "Whether tombstones show a ring marking the Restless Grave raise radius while their owner has the Ancient Scepter upgrade.\n" +
+            "This only affects your own screen, so the host's settings never override it.");
 
         PresetSelector = new PresetSelector(config, preset, _presetSettings);
     }

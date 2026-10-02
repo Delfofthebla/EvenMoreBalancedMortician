@@ -57,6 +57,10 @@ Choosing a preset overwrites every other setting with that preset's values.
 |               | Soul Orb Damage                    | 350%      | 200%              | 250%             |
 |               | Soul Orb Proc Coefficient          | 0.2       | 0.2               | 0.2              |
 |               | Ghoul Spawn Interval (seconds)     | 10        | 10                | 10               |
+| Restless Grave (Ancient Scepter) | Enabled         | false     | false             | true             |
+|               | Raise Radius (meters)              | 25        | 25                | 25               |
+|               | Raise Cooldown (seconds)           | 3         | 3                 | 3                |
+|               | Risen Ghoul Limit Per Tombstone (0 = none) | 0 | 0               | 0                |
 
 
 ### Notes
@@ -70,6 +74,10 @@ Choosing a preset overwrites every other setting with that preset's values.
 This setting replaces both with a chance per aspect. Each new ghoul rolls once for an elite aspect in your equipment slot, and once for every copy of an aspect item you hold, from mods like [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/) (any item with "Aspect" in its name). Holding 3 of one aspect item and 1 of another gives 4 rolls, and each success passes on one copy. No other items or equipment are ever copied.
 
 The EvenMoreBalanced preset uses 25%, so the more aspects you carry, the more likely a ghoul inherits at least one. It's a middle ground between the base mod's "always" and BalancedMortician's "never". The Original preset's 100% matches the base mod for equipment, but also passes on aspect items, which the base mod never did. If you do not use ZetAspects, you may want to increase this a little.
+
+**Restless Grave.** With [StandaloneAncientScepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed, the Ancient Scepter upgrades Tombstone into Restless Grave: enemies slain near one of your tombstones rise as ghouls. Each tombstone has its own cooldown, and a kill goes to the nearest tombstone in range that is ready. Risen ghouls are ordinary ghouls, so they decay, count toward the Ghoul Limit, can inherit aspects, and give vengeful souls when slain. The Scepter is not required; without it, these settings do nothing. With Enabled off, the Scepter treats Mortician as a survivor it can't upgrade, the same as before this feature existed.
+
+While you have Restless Grave, your tombstones show a ring on the ground marking the raise radius, visible to every player. Each player can hide it with **Visuals → Show Raise Radius**, which only affects their own screen.
 
 ## Multiplayer
 

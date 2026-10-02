@@ -5,6 +5,9 @@
 - Soul Recipient: which tombstone a slain ghoul's vengeful soul goes to while you have more than one up. The newest tombstone (as in the base mod), the one nearest the ghoul, or every one. Defaults to Nearest in the EvenMoreBalanced preset.
 - New Feature/Config Setting "Detonation Scales With Mortician": a sacrificed ghoul's explosion scales with your damage stat instead of the ghoul's, so it benefits from items that raise your damage. Defaults to on in the EvenMoreBalanced preset.
 - New Config Settings "Ghoul Base Health" and "Ghoul Health Per Level".
+- Ancient Scepter support: with [StandaloneAncientScepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed, the Scepter upgrades Tombstone into Restless Grave. Enemies slain near a tombstone rise as ghouls, at most once every 3 seconds per tombstone. On in the EvenMoreBalanced preset, off in the others.
+- New Config Settings "Enabled", "Raise Radius", "Raise Cooldown" and "Risen Ghoul Limit Per Tombstone" for Restless Grave.
+- Tombstones show a ring marking the Restless Grave raise radius. New local Config Setting "Show Raise Radius" hides it on your own screen; the host's settings never override it.
 
 **Fixed**
 - 1.1.0 reported itself as 1.0.0, so players on those two versions were not kept out of each other's lobbies. Unlikely to have happened to anyone but has been fixed regardless.

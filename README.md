@@ -4,7 +4,7 @@ Source for the [Even More Balanced Mortician](EvenMoreBalancedMortician/Thunders
 
 ## Building
 
-Requires the .NET SDK (6 or later) and an r2modman profile with [Mortician](https://thunderstore.io/package/Bog/Mortician/) installed. Game, BepInEx, and R2API references come from NuGet (`NuGet.config` adds the BepInEx feed). Mortician is not on NuGet and has no license permitting redistribution, so `Morris.dll` is referenced from the profile.
+Requires the .NET SDK (6 or later) and an r2modman profile with [Mortician](https://thunderstore.io/package/Bog/Mortician/) and [StandaloneAncientScepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed. Game, BepInEx, and R2API references come from NuGet (`NuGet.config` adds the BepInEx feed). Neither mod is on NuGet, so `Morris.dll` and `AncientScepter.dll` are referenced from the profile and never redistributed. The Scepter is only needed to build; at runtime it is optional.
 
 ```
 dotnet build EvenMoreBalancedMortician.sln

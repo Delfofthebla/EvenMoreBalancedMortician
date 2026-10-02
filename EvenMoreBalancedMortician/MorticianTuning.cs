@@ -1,5 +1,6 @@
 using System;
 using EvenMoreBalancedMortician.Presets;
+using EvenMoreBalancedMortician.Scepter;
 using Morris;
 using Morris.Components;
 using RoR2;
@@ -58,6 +59,9 @@ internal static class MorticianTuning
         SetCooldown(skills.secondary, settings.RaiseDeadCooldown);
         SetCooldown(skills.utility, settings.SacrificeCooldown);
         SetCooldown(skills.special, settings.TombstoneCooldown);
+
+        if (RestlessGraveSkill.Definition)
+            RestlessGraveSkill.Definition.baseRechargeInterval = settings.TombstoneCooldown.Value;
 
         if (MorrisPlugin.MorrisBodyIndex == BodyIndex.None)
             return;
