@@ -24,7 +24,9 @@ to disable it. This mod will self-disable if it is detected. If you prefer their
 | BalancedMortician | Bloonjitsu7's BalancedMortician, as it actually plays. |
 | EvenMoreBalanced  | This mod's rebalance. The default.                     |
 
-Choosing a preset overwrites every other setting with that preset's values.
+Choosing a preset overwrites every other setting with that preset's values. Editing any setting afterwards, in game or
+in the config file, switches the preset to Custom. While you stay on a preset, updating the mod moves your settings to
+that preset's new values.
 
 ## Configuration
 

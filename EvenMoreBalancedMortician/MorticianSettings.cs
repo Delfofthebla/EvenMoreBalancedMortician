@@ -95,6 +95,9 @@ internal sealed class MorticianSettings
             "EvenMoreBalanced: Delf's rebalance.\n" +
             "BalancedMortician: Equivalent to Bloonjitsu7's BalancedMortician mod. \n" +
             "Original: Mortician with no changes.");
+        var configVersion = config.Bind(GeneralSection, "Config Version", "",
+            "DO NOT EDIT. Updated automatically.\n" +
+            "The mod version that last loaded this config. When the mod updates, every setting is moved to the selected preset's new values, unless the preset is Custom.");
 
         BaseHealth = Bind(BaseStatsSection, "Base Health",
             "Mortician's maximum health at level 1.",
@@ -275,7 +278,7 @@ internal sealed class MorticianSettings
             "Whether tombstones show a ring marking the Restless Grave raise radius while their owner has the Ancient Scepter upgrade.\n" +
             "This only affects your own screen, so the host's settings never override it.");
 
-        PresetSelector = new PresetSelector(config, preset, _presetSettings);
+        PresetSelector = new PresetSelector(config, preset, configVersion, EvenMoreBalancedMorticianPlugin.Version, _presetSettings);
     }
 
     public string[] SerializeLocalValues() => _presetSettings.Select(setting => setting.SerializedLocalValue).ToArray();

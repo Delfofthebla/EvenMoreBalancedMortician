@@ -14,14 +14,24 @@ internal sealed class PresetSelector
 
     public event Action SettingsChanged;
 
-    public PresetSelector(ConfigFile config, ConfigEntry<MorticianPreset> preset, IReadOnlyList<IPresetSetting> settings)
+    public PresetSelector(ConfigFile config, ConfigEntry<MorticianPreset> preset, ConfigEntry<string> configVersion, string modVersion, IReadOnlyList<IPresetSetting> settings)
     {
         _config = config;
         _preset = preset;
         _settings = settings;
 
+        UpdatePresetFromEarlierVersion(configVersion, modVersion);
         SelectCustomIfSettingsDiverge();
         config.SettingChanged += OnSettingChanged;
+    }
+
+    private void UpdatePresetFromEarlierVersion(ConfigEntry<string> configVersion, string modVersion)
+    {
+        if (configVersion.Value == modVersion)
+            return;
+
+        ApplySelectedPreset();
+        configVersion.Value = modVersion;
     }
 
     private void OnSettingChanged(object sender, SettingChangedEventArgs args)

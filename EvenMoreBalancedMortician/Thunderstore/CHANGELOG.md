@@ -7,6 +7,7 @@
 - New Config Settings "Ghoul Base Health" and "Ghoul Health Per Level".
 - Ancient Scepter support: with [StandaloneAncientScepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed, the Scepter upgrades Tombstone into Restless Grave. Enemies slain near a tombstone rise as ghouls, at most once every 3 seconds per tombstone. On in the EvenMoreBalanced preset, off in the others.
 - New Config Settings "Enabled", "Raise Radius", "Raise Cooldown" and "Risen Ghoul Limit Per Tombstone" for Restless Grave.
+- Updating the mod now moves your settings to the new preset values if you're on a preset. Previously, an update kept your old values and switched you to Custom. This applies to this update too, so EvenMoreBalanced players get the changes below automatically.
 - Tombstones show a ring marking the Restless Grave raise radius. New local Config Setting "Show Raise Radius" hides it on your own screen; the host's settings never override it.
 
 **Changed** (EvenMoreBalanced preset)
