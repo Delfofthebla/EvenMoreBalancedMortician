@@ -4,7 +4,7 @@
         <RootNamespace>EvenMoreBalancedMortician</RootNamespace>
         <ThunderstorePackageName>Even_More_Balanced_Mortician</ThunderstorePackageName>
         <Author>Delfofthebla</Author>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
         <!-- R2API depends on MMHOOK.RoR2, which only ships .NET Framework builds; this mod never references it. -->
         <NoWarn>$(NoWarn);NU1701</NoWarn>
     </PropertyGroup>

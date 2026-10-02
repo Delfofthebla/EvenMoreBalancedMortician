@@ -46,6 +46,8 @@ internal sealed class MorticianSettings
 
     public PresetSetting<float> RaiseDeadCooldown { get; }
     public PresetSetting<int> GhoulLimit { get; }
+    public PresetSetting<float> GhoulBaseHealth { get; }
+    public PresetSetting<float> GhoulHealthPerLevel { get; }
     public PresetSetting<float> GhoulBaseDamage { get; }
     public PresetSetting<float> GhoulDamagePerLevel { get; }
     public PresetSetting<float> GhoulDegen { get; }
@@ -58,6 +60,7 @@ internal sealed class MorticianSettings
     public PresetSetting<float> GhoulAspectInheritChance { get; }
 
     public PresetSetting<float> SacrificeCooldown { get; }
+    public PresetSetting<bool> DetonationScalesWithMortician { get; }
     public PresetSetting<float> SacrificeDamagePercent { get; }
     public PresetSetting<float> SacrificeProcCoefficient { get; }
     public PresetSetting<float> SacrificeRadius { get; }
@@ -65,6 +68,8 @@ internal sealed class MorticianSettings
 
     public PresetSetting<float> TombstoneCooldown { get; }
     public PresetSetting<float> TombstoneDuration { get; }
+    public PresetSetting<bool> LysateCellAddsTombstone { get; }
+    public PresetSetting<SoulRecipient> TombstoneSoulRecipient { get; }
     public PresetSetting<float> TombstoneBaseDamage { get; }
     public PresetSetting<float> TombstoneDamagePerLevel { get; }
     public PresetSetting<float> SoulOrbDamagePercent { get; }
@@ -91,15 +96,15 @@ internal sealed class MorticianSettings
             vanilla: "Every survivor gains 30% of their base health, so 33 for a 110 health survivor.");
         BaseRegen = Bind(BaseStatsSection, "Base Regen",
             "Health Mortician regenerates per second at level 1.",
-            Presets(original: 2.5f, balancedMortician: 2.5f, evenMoreBalanced: 1f),
+            Presets(original: 2.5f, balancedMortician: 2.5f, evenMoreBalanced: 2.5f),
             vanilla: "Most survivors 1. Loader and Acrid 2.5.");
         RegenPerLevel = Bind(BaseStatsSection, "Regen Per Level",
             "Regen per second Mortician gains per level.",
-            Presets(original: 0.5f, balancedMortician: 0.5f, evenMoreBalanced: 0.2f),
+            Presets(original: 0.5f, balancedMortician: 0.5f, evenMoreBalanced: 0.5f),
             vanilla: "Most survivors 0.2. Loader and Acrid 0.5.");
         BaseArmor = Bind(BaseStatsSection, "Base Armor",
             "Mortician's armor at level 1.",
-            Presets(original: 20f, balancedMortician: 20f, evenMoreBalanced: 10f),
+            Presets(original: 20f, balancedMortician: 20f, evenMoreBalanced: 20f),
             vanilla: "Most survivors 0. Mercenary, Loader, Acrid, REX, Seeker and Drifter 20. MUL-T 12.");
         ArmorPerLevel = Bind(BaseStatsSection, "Armor Per Level",
             "Armor Mortician gains per level.",
@@ -122,7 +127,7 @@ internal sealed class MorticianSettings
             Presets(original: 800f, balancedMortician: 360f, evenMoreBalanced: 280f));
         LaunchDamagePercent = Bind(PrimarySection, "Launch Damage Percent",
             "Damage a ghoul or tombstone deals when flung through enemies by your shovel, as a percent of their own damage stats.",
-            Presets(original: 350f, balancedMortician: 600f, evenMoreBalanced: 360f),
+            Presets(original: 350f, balancedMortician: 600f, evenMoreBalanced: 400f),
             note: LaunchDamageNote);
         LaunchProcCoefficient = Bind(PrimarySection, "Launch Proc Coefficient",
             "How strongly each hit from a launched ghoul or tombstone triggers Mortician's on-hit items. 1.0 is full strength.",
@@ -136,8 +141,14 @@ internal sealed class MorticianSettings
             "Maximum number of ghouls Mortician can have at once; raising another kills the oldest. 0 means no limit.",
             Presets(original: 0, balancedMortician: 0, evenMoreBalanced: 0),
             note: "Replaces the Ghoul limit setting in Mortician's own config.");
+        GhoulBaseHealth = Bind(SecondarySection, "Ghoul Base Health",
+            "Ghoul maximum health at level 1.",
+            Presets(original: 150f, balancedMortician: 150f, evenMoreBalanced: 150f));
+        GhoulHealthPerLevel = Bind(SecondarySection, "Ghoul Health Per Level",
+            "Maximum health ghouls gain per level.",
+            Presets(original: 45f, balancedMortician: 45f, evenMoreBalanced: 45f));
         GhoulBaseDamage = Bind(SecondarySection, "Ghoul Base Damage",
-            "Ghoul damage at level 1. Sets the damage of ghoul bites, spit, launched ghouls and Sacrifice explosions.",
+            "Ghoul damage at level 1. Sets the damage of ghoul bites, spit and launched ghouls, and of Sacrifice explosions unless Detonation Scales With Mortician is on.",
             Presets(original: 12f, balancedMortician: 8f, evenMoreBalanced: 8f));
         GhoulDamagePerLevel = Bind(SecondarySection, "Ghoul Damage Per Level",
             "Damage ghouls gain per level.",
@@ -145,7 +156,7 @@ internal sealed class MorticianSettings
         GhoulDegen = Bind(SecondarySection, "Ghoul Degen",
             "Health each ghoul loses per second at level 1. 0 means ghouls never decay.",
             Presets(original: 10f, balancedMortician: 10f, evenMoreBalanced: 10f),
-            note: "Ghouls start with 150 health and gain 45 per level, so the original values give every ghoul about 15 seconds to live at any level.");
+            note: "With the original ghoul health (150, plus 45 per level), the original degen values give every ghoul about 15 seconds to live at any level.");
         GhoulDegenPerLevel = Bind(SecondarySection, "Ghoul Degen Per Level",
             "Health lost per second that ghouls gain per level.",
             Presets(original: 3f, balancedMortician: 3f, evenMoreBalanced: 3f));
@@ -170,17 +181,20 @@ internal sealed class MorticianSettings
             Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 0.7f),
             vanilla: ProcCoefficientVanilla);
         GhoulAspectInheritChance = Bind(SecondarySection, "Aspect Inherit Chance Percent",
-            "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once; aspect items roll once per stack. 0 disables. Ghouls never copy any other items or equipment.",
+            "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once. Aspect items roll once for every copy you hold, and each success passes on one copy. 0 disables. Ghouls never copy any other items or equipment.",
             Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 25f),
             note: "Aspect items are any item with \"Aspect\" in its name, such as ZetAspects' aspect items. The Original preset matches the base mod for aspect equipment, but the base mod never passed on aspect items.");
 
         SacrificeCooldown = Bind(UtilitySection, "Cooldown",
             "Seconds Sacrifice takes to recharge. Cooldown reduction items still apply.",
             Presets(original: 6f, balancedMortician: 6f, evenMoreBalanced: 6f));
+        DetonationScalesWithMortician = Bind(UtilitySection, "Detonation Scales With Mortician",
+            "Whether a sacrificed ghoul's explosion scales with Mortician's damage stat instead of the ghoul's. Mortician's damage stat includes his items and buffs that raise damage; the ghoul's does not.",
+            Presets(original: false, balancedMortician: false, evenMoreBalanced: true));
         SacrificeDamagePercent = Bind(UtilitySection, "Detonation Damage Percent",
-            "Damage of a sacrificed ghoul's explosion, as a percent of the ghoul's damage stat.",
-            Presets(original: 700f, balancedMortician: 925f, evenMoreBalanced: 880f),
-            note: GhoulDamageNote);
+            "Damage of a sacrificed ghoul's explosion, as a percent of the ghoul's damage stat, or Mortician's when Detonation Scales With Mortician is on.",
+            Presets(original: 700f, balancedMortician: 925f, evenMoreBalanced: 800f),
+            note: "Uses Mortician's crit chance and on-hit items either way.");
         SacrificeProcCoefficient = Bind(UtilitySection, "Detonation Proc Coefficient",
             "How strongly a sacrificed ghoul's explosion triggers Mortician's on-hit items, against every enemy it hits. 1.0 is full strength.",
             Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 1f),
@@ -190,16 +204,27 @@ internal sealed class MorticianSettings
             Presets(original: 18f, balancedMortician: 20f, evenMoreBalanced: 20f));
         SacrificeHealPercent = Bind(UtilitySection, "Heal Percent",
             "Percent of Mortician's maximum health healed by each Sacrifice.",
-            Presets(original: 15f, balancedMortician: 15f, evenMoreBalanced: 10f));
+            Presets(original: 15f, balancedMortician: 15f, evenMoreBalanced: 15f));
 
         TombstoneCooldown = Bind(SpecialSection, "Cooldown",
-            "Seconds Tombstone takes to recharge. Cooldown reduction items still apply.",
+            "Seconds the Tombstone takes to recharge. Cooldown reduction items still apply.",
             Presets(original: 30f, balancedMortician: 30f, evenMoreBalanced: 30f),
             vanilla: "Engineer's turrets 30.",
             note: "Tombstone Duration does not follow this; adjust it separately.");
         TombstoneDuration = Bind(SpecialSection, "Tombstone Duration",
             "Seconds a tombstone lasts before crumbling. 0 means it lasts until replaced or destroyed.",
             Presets(original: 0f, balancedMortician: 0f, evenMoreBalanced: 30f));
+        LysateCellAddsTombstone = Bind(SpecialSection, "Lysate Cell Adds Tombstone",
+            "Whether holding a Lysate Cell lets Mortician keep 2 tombstones up at once instead of 1. Without this enabled, the extra charge from Lysate Cell merely replaces the existing tombstone.",
+            Presets(original: false, balancedMortician: false, evenMoreBalanced: true),
+            vanilla: "Engineer's turret limit rises from 2 to 3 while he holds any Lysate Cells. Further stacks add charges but not turrets.");
+        TombstoneSoulRecipient = Bind(SpecialSection, "Soul Recipient",
+            "Which tombstone receives a slain ghoul's vengeful soul while you have more than one active.\n" +
+            "Newest: the most recently placed one.\n" +
+            "Nearest: the one closest to where the ghoul died.\n" +
+            "Every: each one receives a soul.",
+            Presets(original: SoulRecipient.Newest, balancedMortician: SoulRecipient.Newest, evenMoreBalanced: SoulRecipient.Nearest),
+            note: "Only matters while Lysate Cell Adds Tombstone lets you keep more than one tombstone.");
         TombstoneBaseDamage = Bind(SpecialSection, "Tombstone Base Damage",
             "Tombstone damage stat at level 1. Sets the damage of vengeful souls and launched tombstones.",
             Presets(original: 12f, balancedMortician: 12f, evenMoreBalanced: 12f));
@@ -258,17 +283,17 @@ internal sealed class MorticianSettings
         var lines = new List<string>
         {
             summary,
-            $"Presets:",
+            $"\nPresets:",
             $"Original {Format(presets.Original)}",
             $"BalancedMortician {Format(presets.BalancedMortician)}",
             $"EvenMoreBalanced {Format(presets.EvenMoreBalanced)}"
         };
 
         if (vanilla != null)
-            lines.Add("Vanilla: " + vanilla);
+            lines.Add("\nVanilla: " + vanilla);
 
         if (note != null)
-            lines.Add("Note: " + note);
+            lines.Add("\nNote: " + note);
 
         return string.Join("\n", lines);
     }

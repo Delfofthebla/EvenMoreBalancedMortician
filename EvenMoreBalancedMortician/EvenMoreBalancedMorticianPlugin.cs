@@ -20,7 +20,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
 {
     public const string Guid = "com.Delfofthebla.EvenMoreBalancedMortician";
     public const string Name = "EvenMoreBalancedMortician";
-    public const string Version = "1.0.0";
+    public const string Version = "1.2.0";
 
     private const string BalancedMorticianGuid = "com.Bloonjitsu7.BalancedMortician";
 
@@ -38,7 +38,10 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         GhoulAspectPatch.Install(_settings.GhoulAspectInheritChance);
         ProcCoefficientPatch.Install(_settings);
         GhoulLimitPatch.Install(_settings.GhoulLimit);
+        DetonationDamagePatch.Install(_settings.DetonationScalesWithMortician);
         TombstoneDurationPatch.Install(_settings.TombstoneDuration);
+        TombstoneLimitPatch.Install(_settings.LysateCellAddsTombstone);
+        TombstoneSoulPatch.Install(_settings.TombstoneSoulRecipient);
 
         ApplySettings();
         _settings.PresetSelector.SettingsChanged += ApplySettings;

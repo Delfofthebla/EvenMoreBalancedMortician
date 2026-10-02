@@ -84,8 +84,8 @@ internal static class GhoulAspectPatch
         return equipmentDef && equipmentDef.passiveBuffDef && equipmentDef.passiveBuffDef.isElite;
     }
 
-    private static bool IsAspectItem(ItemIndex item) =>
-        ItemCatalog.GetItemDef(item).name.IndexOf(AspectNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
+    private static bool IsAspectItem(ItemIndex item)
+        => ItemCatalog.GetItemDef(item).name.IndexOf(AspectNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
 
     private static bool RollInheritChance() => Util.CheckRoll(_inheritChancePercent.Value);
 

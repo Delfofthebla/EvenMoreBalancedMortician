@@ -109,6 +109,8 @@ internal static class MorticianTuning
     private static void ApplyGhoulStats(CharacterBody body, MorticianSettings settings)
     {
         ApplyDamageStats(body, settings.GhoulBaseDamage, settings.GhoulDamagePerLevel);
+        body.baseMaxHealth = settings.GhoulBaseHealth.Value;
+        body.levelMaxHealth = settings.GhoulHealthPerLevel.Value;
         body.baseRegen = -settings.GhoulDegen.Value;
         body.levelRegen = -settings.GhoulDegenPerLevel.Value;
     }
