@@ -12,11 +12,17 @@ internal sealed class GraveRaiser : MonoBehaviour
     private readonly List<CharacterBody> _risenGhouls = [];
 
     private TombstoneController _tombstone;
+    private CharacterBody _tombstoneBody;
     private Run.FixedTimeStamp _readyAt = Run.FixedTimeStamp.negativeInfinity;
 
-    private TeamIndex Team => _tombstone.teamComponent.teamIndex;
+    private TeamIndex Team => _tombstoneBody.teamComponent.teamIndex;
+    private CharacterBody Owner => TombstoneOwner.BodyOf(_tombstoneBody);
 
-    private void Awake() => _tombstone = GetComponent<TombstoneController>();
+    private void Awake()
+    {
+        _tombstone = GetComponent<TombstoneController>();
+        _tombstoneBody = GetComponent<CharacterBody>();
+    }
 
     private void OnEnable() => InstanceTracker.Add(this);
 
@@ -27,7 +33,7 @@ internal sealed class GraveRaiser : MonoBehaviour
         if (!_readyAt.hasPassed || victimTeam == Team || victimTeam == TeamIndex.Neutral)
             return false;
 
-        if (!RestlessGraveSkill.IsEquippedBy(_tombstone.minionController.ownerBody))
+        if (!RestlessGraveSkill.IsEquippedBy(Owner))
             return false;
 
         _risenGhouls.RemoveAll(IsGone);
@@ -43,14 +49,15 @@ internal sealed class GraveRaiser : MonoBehaviour
             masterPrefab = GhoulMinion.ghoulMasterPrefab,
             ignoreTeamMemberLimit = true,
             teamIndexOverride = Team,
-            summonerBodyObject = _tombstone.minionController.owner,
+            summonerBodyObject = Owner.gameObject,
             position = GroundNear(corpsePosition),
             rotation = transform.rotation,
         };
 
         var ghoul = summon.Perform();
-        if (ghoul && ghoul.GetBody())
-            _risenGhouls.Add(ghoul.GetBody());
+        var ghoulBody = ghoul ? ghoul.GetBody() : null;
+        if (ghoulBody)
+            _risenGhouls.Add(ghoulBody);
     }
 
     private Vector3 GroundNear(Vector3 position)

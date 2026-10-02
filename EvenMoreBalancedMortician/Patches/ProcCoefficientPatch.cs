@@ -42,11 +42,11 @@ internal static class ProcCoefficientPatch
         self.attack.procCoefficient = _settings.LaunchProcCoefficient.Value;
     }
 
-    private static void ReplaceClingBiteProcCoefficient(ILContext il) =>
-        ReplaceProcCoefficientConstant<DamageInfo>(il, ClingBiteProcCoefficient);
+    private static void ReplaceClingBiteProcCoefficient(ILContext il)
+        => ReplaceProcCoefficientConstant<DamageInfo>(il, ClingBiteProcCoefficient);
 
-    private static void ReplaceDetonationProcCoefficient(ILContext il) =>
-        ReplaceProcCoefficientConstant<BlastAttack>(il, DetonationProcCoefficient);
+    private static void ReplaceDetonationProcCoefficient(ILContext il)
+        => ReplaceProcCoefficientConstant<BlastAttack>(il, DetonationProcCoefficient);
 
     private static void ReplaceProcCoefficientConstant<TAttack>(ILContext il, Func<float> procCoefficient)
     {
@@ -74,7 +74,7 @@ internal static class ProcCoefficientPatch
             return;
         }
 
-        cursor.EmitDelegate<Func<Orb, Orb>>(WithSoulOrbProcCoefficient);
+        cursor.EmitDelegate(WithSoulOrbProcCoefficient);
     }
 
     private static Orb WithSoulOrbProcCoefficient(Orb soulOrb)

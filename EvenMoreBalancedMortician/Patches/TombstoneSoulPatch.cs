@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using EvenMoreBalancedMortician.Presets;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
@@ -22,15 +24,15 @@ internal static class TombstoneSoulPatch
     {
         _soulRecipient = soulRecipient;
 
-        _tombstoneStartHook = HookTombstone(nameof(TombstoneController.Start), TrackTombstone);
-        _tombstoneDestroyHook = HookTombstone(nameof(TombstoneController.OnDestroy), HandOverActiveTombstone);
+        _tombstoneStartHook = HookTombstone(MorticianMethods.TombstoneStart, TrackTombstone);
+        _tombstoneDestroyHook = HookTombstone(typeof(TombstoneController).GetMethod(nameof(TombstoneController.OnDestroy)), HandOverActiveTombstone);
 
         var ghoulDeath = typeof(MorrisMinionController).GetMethod(nameof(MorrisMinionController.OnDeathStart));
         _ghoulDeathHook = new ILHook(ghoulDeath, DeliverSoulsBySetting);
     }
 
-    private static Hook HookTombstone(string methodName, Action<Action<TombstoneController>, TombstoneController> hook)
-        => new(typeof(TombstoneController).GetMethod(methodName), hook);
+    private static Hook HookTombstone(MethodInfo method, Action<Action<TombstoneController>, TombstoneController> hook)
+        => new(method, hook);
 
     private static void TrackTombstone(Action<TombstoneController> orig, TombstoneController self)
     {
@@ -66,7 +68,7 @@ internal static class TombstoneSoulPatch
         }
 
         cursor.Remove();
-        cursor.Emit(Mono.Cecil.Cil.OpCodes.Ldarg_0);
+        cursor.Emit(OpCodes.Ldarg_0);
         cursor.EmitDelegate<Action<TombstoneController, MorrisMinionController>>(DeliverSoul);
     }
 
@@ -83,6 +85,7 @@ internal static class TombstoneSoulPatch
                     tombstone.AddSoulStockServer();
                 break;
 
+            case SoulRecipient.Newest:
             default:
                 activeTombstone.AddSoulStockServer();
                 break;

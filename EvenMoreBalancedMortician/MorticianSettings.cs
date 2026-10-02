@@ -297,8 +297,8 @@ internal sealed class MorticianSettings
             setting.UseLocalValue();
     }
 
-    private static PresetValues<T> Presets<T>(T original, T balancedMortician, T evenMoreBalanced) =>
-        new(original, balancedMortician, evenMoreBalanced);
+    private static PresetValues<T> Presets<T>(T original, T balancedMortician, T evenMoreBalanced)
+        => new(original, balancedMortician, evenMoreBalanced);
 
     private PresetSetting<T> Bind<T>(string section, string key, string summary, PresetValues<T> presets, string vanilla = null, string note = null)
     {

@@ -2,12 +2,8 @@ using System;
 
 namespace EvenMoreBalancedMortician.Presets;
 
-internal readonly struct PresetValues<T>(T original, T balancedMortician, T evenMoreBalanced)
+internal readonly record struct PresetValues<T>(T Original, T BalancedMortician, T EvenMoreBalanced)
 {
-    public T Original { get; } = original;
-    public T BalancedMortician { get; } = balancedMortician;
-    public T EvenMoreBalanced { get; } = evenMoreBalanced;
-
     public T For(MorticianPreset preset) => preset switch
     {
         MorticianPreset.Original => Original,

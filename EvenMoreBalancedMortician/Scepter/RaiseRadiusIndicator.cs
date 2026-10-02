@@ -43,17 +43,11 @@ internal sealed class RaiseRadiusIndicator : MonoBehaviour
         if (!_indicator)
             return;
 
-        var isVisible = _isShown.Value && _radius.Value > 0f && RestlessGraveSkill.IsEquippedBy(OwnerBody());
+        var isVisible = _isShown.Value && _radius.Value > 0f && RestlessGraveSkill.IsEquippedBy(TombstoneOwner.BodyOf(_tombstone));
         if (_indicator.activeSelf != isVisible)
             _indicator.SetActive(isVisible);
 
         if (isVisible)
             _indicator.transform.localScale = Vector3.one * (_radius.Value / transform.lossyScale.x);
-    }
-
-    private CharacterBody OwnerBody()
-    {
-        var ownerMaster = _tombstone.master ? _tombstone.master.minionOwnership.ownerMaster : null;
-        return ownerMaster ? ownerMaster.GetBody() : null;
     }
 }

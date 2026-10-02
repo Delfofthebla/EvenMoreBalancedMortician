@@ -15,9 +15,7 @@ internal static class TombstoneDurationPatch
     public static void Install(PresetSetting<float> duration)
     {
         _tombstoneDuration = duration;
-
-        var tombstoneStart = typeof(TombstoneController).GetMethod(nameof(TombstoneController.Start));
-        _tombstoneStartHook = new Hook(tombstoneStart, (Action<Action<TombstoneController>, TombstoneController>)StartExpiryTimer);
+        _tombstoneStartHook = new Hook(MorticianMethods.TombstoneStart, (Action<Action<TombstoneController>, TombstoneController>)StartExpiryTimer);
     }
 
     private static void StartExpiryTimer(Action<TombstoneController> orig, TombstoneController self)

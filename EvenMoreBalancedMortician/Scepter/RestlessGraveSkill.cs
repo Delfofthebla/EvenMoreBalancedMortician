@@ -47,11 +47,8 @@ internal static class RestlessGraveSkill
         if (!Definition)
             return;
 
-        foreach (var body in CharacterBody.readOnlyInstancesList)
+        foreach (var body in LiveBodies.Of(MorrisPlugin.MorrisBodyIndex))
         {
-            if (body.bodyIndex != MorrisPlugin.MorrisBodyIndex)
-                continue;
-
             if (_enabled.Value)
                 AncientScepterCompat.ReapplyUpgrade(body);
             else

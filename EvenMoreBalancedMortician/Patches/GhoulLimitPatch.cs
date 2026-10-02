@@ -1,9 +1,7 @@
 using System;
-using System.Reflection;
 using EvenMoreBalancedMortician.Presets;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using Morris.Components;
 using Morris.Modules.NPC;
 using R2API;
 using RoR2;
@@ -25,11 +23,10 @@ internal static class GhoulLimitPatch
         MorticianSurvivor.ghoulSlot = DeployableAPI.RegisterDeployableSlot(GetGhoulLimit);
         EnsureGhoulsAreDeployable();
 
-        var minionStart = typeof(MorrisMinionController).GetMethod("Start", BindingFlags.Instance | BindingFlags.NonPublic);
-        _minionStartHook = new ILHook(minionStart, AlwaysTrackGhoulsAsDeployables);
+        _minionStartHook = new ILHook(MorticianMethods.MinionStart, AlwaysTrackGhoulsAsDeployables);
     }
 
-    // Mortician only gives the ghoul master a Deployable when its own config limit was positive at load, and the forced tracking below needs one.
+    // The base mod only gives the ghoul master a Deployable when its own config limit was positive at load, and the forced tracking below needs one.
     private static void EnsureGhoulsAreDeployable()
     {
         var ghoulMaster = GhoulMinion.ghoulMasterPrefab;
@@ -46,7 +43,7 @@ internal static class GhoulLimitPatch
     private static int GetGhoulLimit(CharacterMaster master, int deployableCountMultiplier)
         => _ghoulLimit.Value > 0 ? _ghoulLimit.Value : int.MaxValue;
 
-    // Mortician only tracks ghouls in its deployable slot when its own config limit is positive, so that check is forced true and our slot's limit decides instead.
+    // The base mod only tracks ghouls in its deployable slot when its own config limit is positive, so that check is forced true and our own slot's limit decides instead.
     private static void AlwaysTrackGhoulsAsDeployables(ILContext il)
     {
         var cursor = new ILCursor(il);

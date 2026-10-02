@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using EvenMoreBalancedMortician.Presets;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
@@ -22,8 +21,7 @@ internal static class GhoulAspectPatch
     {
         _inheritChancePercent = inheritChancePercent;
 
-        var minionStart = typeof(MorrisMinionController).GetMethod("Start", BindingFlags.Instance | BindingFlags.NonPublic);
-        _minionStartHook = new Hook(minionStart, (Action<Action<MorrisMinionController>, MorrisMinionController>)InheritAspects);
+        _minionStartHook = new Hook(MorticianMethods.MinionStart, (Action<Action<MorrisMinionController>, MorrisMinionController>)InheritAspects);
     }
 
     private static void InheritAspects(Action<MorrisMinionController> orig, MorrisMinionController self)

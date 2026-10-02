@@ -1,6 +1,7 @@
 using System;
 using EntityStates;
 using EvenMoreBalancedMortician.Presets;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using RoR2;
@@ -22,7 +23,7 @@ internal static class DetonationDamagePatch
     private static void ScaleWithSacrificerDamage(ILContext il)
     {
         var cursor = new ILCursor(il);
-        var foundDamageStat = cursor.TryGotoNext(MoveType.After,
+        var foundDamageStat = cursor.TryGotoNext(
             instruction => instruction.MatchLdfld<BaseState>(nameof(BaseState.damageStat)),
             instruction => instruction.MatchMul(),
             instruction => instruction.MatchStfld<BlastAttack>(nameof(BlastAttack.baseDamage)));
@@ -33,9 +34,9 @@ internal static class DetonationDamagePatch
             return;
         }
 
-        cursor.Index -= 2;
-        cursor.Emit(Mono.Cecil.Cil.OpCodes.Ldarg_0);
-        cursor.EmitDelegate<Func<float, GhoulDeath, float>>(DetonationDamageStat);
+        cursor.Index++;
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.EmitDelegate(DetonationDamageStat);
     }
 
     private static float DetonationDamageStat(float ghoulDamageStat, GhoulDeath ghoulDeath)

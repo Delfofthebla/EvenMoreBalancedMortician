@@ -19,32 +19,41 @@ internal static class MorticianTuning
     {
         ApplyToBodies("Mortician", MorrisPlugin.MorrisBodyPrefab, MorrisPlugin.MorrisBodyIndex, body => ApplyMorticianStats(body, settings));
         ApplyCooldowns(settings);
+        ApplyShovel(settings);
+        ApplyGhouls(settings);
+        ApplySacrifice(settings);
+        ApplyTombstone(settings);
+    }
 
+    private static void ApplyShovel(MorticianSettings settings)
+    {
         SwingShovel.damageCoefficient = AsCoefficient(settings.ShovelDamagePercent);
         BaseLaunchedState.damageCoefficient = AsCoefficient(settings.LaunchDamagePercent);
+    }
 
+    private static void ApplyGhouls(MorticianSettings settings)
+    {
         GhoulMelee.damageCoefficient = AsCoefficient(settings.GhoulBiteDamagePercent);
         ClingState.damageCoefficient = AsCoefficient(settings.GhoulBiteDamagePercent);
         BileSpit.damageCoefficient = AsCoefficient(settings.GhoulSpitDamagePercent);
         ApplySpitProcCoefficient(settings);
-        ApplyToBodies(
-            "Ghoul",
-            MorrisPlugin.GhoulBodyPrefab,
-            MorrisPlugin.GhoulBodyIndex,
-            body => ApplyGhoulStats(body, settings)
-        );
 
+        ApplyToBodies("Ghoul", MorrisPlugin.GhoulBodyPrefab, MorrisPlugin.GhoulBodyIndex, body => ApplyGhoulStats(body, settings));
+    }
+
+    private static void ApplySacrifice(MorticianSettings settings)
+    {
         GhoulDeath.sacrificedDamageCoefficient = AsCoefficient(settings.SacrificeDamagePercent);
         GhoulDeath.sacrificedRadius = settings.SacrificeRadius.Value;
         Sacrifice.sacrificePercentHealAmount = AsCoefficient(settings.SacrificeHealPercent);
+    }
 
-        ApplyToBodies("Tombstone",
-            MorrisPlugin.TombstoneBodyPrefab,
-            MorrisPlugin.TombstoneBodyIndex,
-            body => ApplyDamageStats(body, settings.TombstoneBaseDamage, settings.TombstoneDamagePerLevel)
-        );
+    private static void ApplyTombstone(MorticianSettings settings)
+    {
         TombstoneController.soulOrbDamage = AsCoefficient(settings.SoulOrbDamagePercent);
         TombstoneController.spawnTime = settings.TombstoneGhoulSpawnInterval.Value;
+
+        ApplyToBodies("Tombstone", MorrisPlugin.TombstoneBodyPrefab, MorrisPlugin.TombstoneBodyIndex, body => ApplyDamageStats(body, settings.TombstoneBaseDamage, settings.TombstoneDamagePerLevel));
     }
 
     private static void ApplyCooldowns(MorticianSettings settings)
@@ -63,14 +72,8 @@ internal static class MorticianTuning
         if (RestlessGraveSkill.Definition)
             RestlessGraveSkill.Definition.baseRechargeInterval = settings.TombstoneCooldown.Value;
 
-        if (MorrisPlugin.MorrisBodyIndex == BodyIndex.None)
-            return;
-
-        foreach (var body in CharacterBody.readOnlyInstancesList)
-        {
-            if (body.bodyIndex == MorrisPlugin.MorrisBodyIndex)
-                RefreshCooldowns(body.skillLocator);
-        }
+        foreach (var body in LiveBodies.Of(MorrisPlugin.MorrisBodyIndex))
+            RefreshCooldowns(body.skillLocator);
     }
 
     private static void SetCooldown(GenericSkill skillSlot, PresetSetting<float> cooldown)
@@ -136,14 +139,8 @@ internal static class MorticianTuning
 
         applyStats(prefabBody);
 
-        if (bodyIndex == BodyIndex.None)
-            return;
-
-        foreach (var liveBody in CharacterBody.readOnlyInstancesList)
+        foreach (var liveBody in LiveBodies.Of(bodyIndex))
         {
-            if (liveBody.bodyIndex != bodyIndex)
-                continue;
-
             applyStats(liveBody);
             liveBody.MarkAllStatsDirty();
         }

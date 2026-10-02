@@ -8,13 +8,12 @@ internal sealed class PresetSetting<T>(ConfigEntry<T> entry, PresetValues<T> pre
     private bool _hasHostValue;
     private T _hostValue;
 
-    public ConfigEntry<T> Entry { get; } = entry;
-    public T Value => _hasHostValue ? _hostValue : Entry.Value;
-    public string SerializedLocalValue => TomlTypeConverter.ConvertToString(Entry.Value, typeof(T));
+    public T Value => _hasHostValue ? _hostValue : entry.Value;
+    public string SerializedLocalValue => TomlTypeConverter.ConvertToString(entry.Value, typeof(T));
 
-    public void ApplyPreset(MorticianPreset preset) => Entry.Value = presetValues.For(preset);
+    public void ApplyPreset(MorticianPreset preset) => entry.Value = presetValues.For(preset);
 
-    public bool Matches(MorticianPreset preset) => EqualityComparer<T>.Default.Equals(Entry.Value, presetValues.For(preset));
+    public bool Matches(MorticianPreset preset) => EqualityComparer<T>.Default.Equals(entry.Value, presetValues.For(preset));
 
     public void UseHostValue(string serializedValue)
     {

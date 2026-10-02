@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using BepInEx.Configuration;
+using EvenMoreBalancedMortician.Patches;
 using EvenMoreBalancedMortician.Presets;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
@@ -24,8 +25,7 @@ internal static class RestlessGrave
         _risenGhoulLimit = risenGhoulLimit;
         RaiseRadiusIndicator.Configure(radius, showRadius);
 
-        var tombstoneStart = typeof(TombstoneController).GetMethod(nameof(TombstoneController.Start));
-        _tombstoneStartHook = new Hook(tombstoneStart, (Action<Action<TombstoneController>, TombstoneController>)AddRestlessGraveComponents);
+        _tombstoneStartHook = new Hook(MorticianMethods.TombstoneStart, (Action<Action<TombstoneController>, TombstoneController>)AddRestlessGraveComponents);
 
         GlobalEventManager.onCharacterDeathGlobal += RaiseSlainEnemy;
     }
