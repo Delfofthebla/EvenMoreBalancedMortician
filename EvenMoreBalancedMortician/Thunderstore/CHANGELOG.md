@@ -1,3 +1,13 @@
+#### 1.3.0
+
+**Changed** (Original and BalancedMortician presets)
+
+Neither original mod supported the Lysate Cell or the Ancient Scepter, so these presets now include this mod's support for both. Their balance numbers are unchanged.
+- Lysate Cell Adds Tombstone: off → on
+- Soul Recipient: Newest → Nearest
+- Restless Grave: off → on
+- Restless Grave Raise Radius: 25 → 30
+
 #### 1.2.0
 
 **Added**

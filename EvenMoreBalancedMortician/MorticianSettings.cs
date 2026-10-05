@@ -94,7 +94,7 @@ internal sealed class MorticianSettings
             "Which preset the other settings follow. Choosing a preset overwrites every other setting with that preset's values; editing any setting afterwards switches this to Custom.\n" +
             "EvenMoreBalanced: Delf's rebalance.\n" +
             "BalancedMortician: Equivalent to Bloonjitsu7's BalancedMortician mod. \n" +
-            "Original: Mortician with no changes.");
+            "Original: Mortician's original numbers.");
         var configVersion = config.Bind(GeneralSection, "Config Version", "",
             "DO NOT EDIT. Updated automatically.\n" +
             "The mod version that last loaded this config. When the mod updates, every setting is moved to the selected preset's new values, unless the preset is Custom.");
@@ -229,14 +229,14 @@ internal sealed class MorticianSettings
             Presets(original: 0f, balancedMortician: 0f, evenMoreBalanced: 30f));
         LysateCellAddsTombstone = Bind(SpecialSection, "Lysate Cell Adds Tombstone",
             "Whether holding a Lysate Cell lets Mortician keep 2 tombstones up at once instead of 1. Without this enabled, the extra charge from Lysate Cell merely replaces the existing tombstone.",
-            Presets(original: false, balancedMortician: false, evenMoreBalanced: true),
+            Presets(original: true, balancedMortician: true, evenMoreBalanced: true),
             vanilla: "Engineer's turret limit rises from 2 to 3 while he holds any Lysate Cells. Further stacks add charges but not turrets.");
         TombstoneSoulRecipient = Bind(SpecialSection, "Soul Recipient",
             "Which tombstone receives a slain ghoul's vengeful soul while you have more than one active.\n" +
             "Newest: the most recently placed one.\n" +
             "Nearest: the one closest to where the ghoul died.\n" +
             "Every: each one receives a soul.",
-            Presets(original: SoulRecipient.Newest, balancedMortician: SoulRecipient.Newest, evenMoreBalanced: SoulRecipient.Nearest),
+            Presets(original: SoulRecipient.Nearest, balancedMortician: SoulRecipient.Nearest, evenMoreBalanced: SoulRecipient.Nearest),
             note: "Only matters while Lysate Cell Adds Tombstone lets you keep more than one tombstone.");
         TombstoneBaseDamage = Bind(SpecialSection, "Tombstone Base Damage",
             "Tombstone damage stat at level 1. Sets the damage of vengeful souls and launched tombstones.",
@@ -259,11 +259,11 @@ internal sealed class MorticianSettings
 
         RestlessGraveEnabled = Bind(ScepterSection, "Enabled",
             "Whether the Ancient Scepter upgrades Tombstone into Restless Grave. When off, the Scepter treats Mortician as a survivor it has no upgrade for, following its own config for unusable Scepters.",
-            Presets(original: false, balancedMortician: false, evenMoreBalanced: true),
-            note: ScepterNote + " Neither Mortician nor BalancedMortician support the Ancient Scepter, so their presets leave it off.");
+            Presets(original: true, balancedMortician: true, evenMoreBalanced: true),
+            note: ScepterNote);
         RestlessGraveRadius = Bind(ScepterSection, "Raise Radius",
             "With the Ancient Scepter, enemies slain within this many meters of a tombstone rise as ghouls.",
-            Presets(original: 25f, balancedMortician: 25f, evenMoreBalanced: 30f),
+            Presets(original: 30f, balancedMortician: 30f, evenMoreBalanced: 30f),
             note: ScepterNote);
         RestlessGraveCooldown = Bind(ScepterSection, "Raise Cooldown",
             "Seconds after raising a ghoul before the same tombstone can raise another. Each tombstone has its own cooldown; a kill goes to the nearest tombstone in range that is ready.",

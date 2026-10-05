@@ -24,7 +24,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
 {
     public const string Guid = "com.Delfofthebla.EvenMoreBalancedMortician";
     public const string Name = "EvenMoreBalancedMortician";
-    public const string Version = "1.2.0";
+    public const string Version = "1.3.0";
 
     private const string BalancedMorticianGuid = "com.Bloonjitsu7.BalancedMortician";
 

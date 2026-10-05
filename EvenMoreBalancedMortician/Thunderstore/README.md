@@ -1,128 +1,93 @@
 # Even More Balanced Mortician
 
-A _very_ configurable rebalance & tweak mod of [Mortician](https://thunderstore.io/package/Bog/Mortician/). Every base stat, ability
-number, or mechanical behavior change is a setting you can tweak. The mod comes with presets that can be modified via
-config file or [Risk Of Options](https://thunderstore.io/c/riskofrain2/p/Rune580/Risk_Of_Options/) if fiddling with
-numbers isn't really your cup of tea.
+A rebalance of [Mortician](https://thunderstore.io/package/Bog/Mortician/), with a few new item interactions on top.
 
-I recently started playing Risk of Rain 2 again after a long break and I found the Mortician mod. It's pretty neat! But
-holy moly was it overpowered. I wanted to play him with some friends, but I really don't like overpowered survivors
-that break vanilla balance and I knew it was going to take some fiddling with to get just right, So I made this mod.
-Expect semi-frequent updates for a while I playtest and tweak the numbers.
+I came back to Risk of Rain 2 after a long break and found the Mortician mod. It's pretty neat! But holy moly is he
+overpowered. I wanted to play him with friends without him steamrolling vanilla balance, so I made this mod. Expect
+semi-frequent updates for a while as I playtest and tweak the numbers.
 
-In addition to the balance presets, I've also expanded upon some item interaction capabilities such as the Lysate Cell
-or Elite Aspects.
+**Incompatible with [BalancedMortician](https://thunderstore.io/package/Bloonjitsu7/BalancedMortician/).** This mod
+disables itself if it finds it, so you'll need to remove one or the other. If you prefer Bloonjitsu7's numbers, they're
+included here as a preset.
 
-**Incompatible with [BalancedMortician](https://thunderstore.io/package/Bloonjitsu7/BalancedMortician/).** You will need
-to disable it. This mod will self-disable if it is detected. If you prefer their numbers over my own, the Bloonjitsu7's values are available as a configuration preset instead.
+## What's different
 
-## Configuration Presets
+### The rebalance
 
-| Preset            | Description                                            |
-|-------------------|--------------------------------------------------------|
-| Original          | Mortician with no changes.                             |
-| BalancedMortician | Bloonjitsu7's BalancedMortician, as it actually plays. |
-| EvenMoreBalanced  | This mod's rebalance. The default.                     |
+![Mortician's skills with this mod's numbers](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/MorticianAbilityList.png)
 
-Choosing a preset overwrites every other setting with that preset's values. Editing any setting afterwards, in game or
-in the config file, switches the preset to Custom. While you stay on a preset, updating the mod moves your settings to
-that preset's new values.
+Mortician's early-midgame damage mostly came from his primary that hit like a freight train, so that's where most of the
+nerf went. The swing drops from 800% to 340% damage, but now counts as primary skill damage, so items like Luminous Shot
+work with it. Flinging a ghoul or tombstone goes up a little, from 350% to 400%, which hits the breakpoint for items
+that need a 400% hit.
 
-## Configuration
+Ghouls hit a bit softer (8 base damage instead of 12) and their spit's proc coefficient was nerfed a little. In exchange,
+Sacrifice now scales with _your_ damage stat instead of the ghoul's. Ghouls don't carry your items, so the original
+explosion fell off hard late in a run. It still kinda does, but at least you can _technically_ scale it. Now it deals 800%
+of your damage over a slightly bigger radius, and anything that boosts your damage, (like Shaped Glass) boosts it too.
 
-`BepInEx/config/com.Delfofthebla.EvenMoreBalancedMortician.cfg`, or in-game through Risk Of Options. Changes apply
-immediately, and skill tooltips update to match.
+The tombstone crumbles after 30 seconds instead of sticking around forever, and its vengeful souls hit for 280% instead
+of 350%.
 
-| Section                          | Setting                                    | Original  | BalancedMortician | EvenMoreBalanced |
-|----------------------------------|--------------------------------------------|-----------|-------------------|------------------|
-| Base Stats                       | Health / Per Level                         | 200 / 66  | 200 / 66          | 180 / 54         |
-|                                  | Regen / Per Level                          | 2.5 / 0.5 | 2.5 / 0.5         | 2.5 / 0.5        |
-|                                  | Armor / Per Level                          | 20 / 0    | 20 / 0            | 20 / 0           |
-|                                  | Damage / Per Level                         | 12 / 2.4  | 12 / 2.4          | 12 / 2.4         |
-| Shovel Strike                    | Counts As Primary Skill Damage             | false     | true              | true             |
-|                                  | Swing Damage                               | 800%      | 360%              | 340%             |
-|                                  | Launch Damage                              | 350%      | 600%              | 400%             |
-|                                  | Launch Proc Coefficient                    | 1.0       | 1.0               | 1.0              |
-| Raise Dead                       | Cooldown (seconds)                         | 7         | 7                 | 7                |
-|                                  | Ghoul Limit (0 = none)                     | 0         | 0                 | 0                |
-|                                  | Ghoul Health / Per Level                   | 150 / 45  | 150 / 45          | 150 / 45         |
-|                                  | Ghoul Base Damage / Per Level              | 12 / 2.4  | 8 / 1.6           | 8 / 1.6          |
-|                                  | Ghoul Degen / Per Level                    | 10 / 3    | 10 / 3            | 10 / 3           |
-|                                  | Bite Damage                                | 150%      | 150%              | 150%             |
-|                                  | Bite Proc Coefficient                      | 1.0       | 1.0               | 1.0              |
-|                                  | Cling Bite Proc Coefficient                | 0.8       | 0.8               | 0.8              |
-|                                  | Spit Damage                                | 100%      | 100%              | 100%             |
-|                                  | Spit Proc Coefficient                      | 1.0       | 1.0               | 0.7              |
-|                                  | Aspect Inherit Chance                      | 100%      | 0%                | 33%              |
-| Sacrifice                        | Cooldown (seconds)                         | 6         | 6                 | 6                |
-|                                  | Detonation Scales With Mortician           | false     | false             | true             |
-|                                  | Detonation Damage                          | 700%      | 925%              | 800%             |
-|                                  | Detonation Proc Coefficient                | 1.0       | 1.0               | 1.0              |
-|                                  | Detonation Radius                          | 18        | 20                | 20               |
-|                                  | Heal                                       | 15%       | 15%               | 15%              |
-| Tombstone                        | Cooldown (seconds)                         | 30        | 30                | 30               |
-|                                  | Tombstone Duration (0 = unlimited)         | 0         | 0                 | 30               |
-|                                  | Lysate Cell Adds Tombstone                 | false     | false             | true             |
-|                                  | Soul Recipient                             | -         | -                 | Nearest          |
-|                                  | Tombstone Base Damage / Per Level          | 12 / 2.4  | 12 / 2.4          | 12 / 2.4         |
-|                                  | Soul Orb Damage                            | 350%      | 200%              | 280%             |
-|                                  | Soul Orb Proc Coefficient                  | 0.2       | 0.2               | 0.2              |
-|                                  | Ghoul Spawn Interval (seconds)             | 10        | 10                | 10               |
-| Restless Grave (Ancient Scepter) | Enabled                                    | false     | false             | true             |
-|                                  | Raise Radius (meters)                      | -         | -                 | 30               |
-|                                  | Raise Cooldown (seconds)                   | -         | -                 | 3                |
-|                                  | Risen Ghoul Limit Per Tombstone (0 = none) | -         | -                 | 0                |
+Mortician himself is a touch less tanky, at 180 health instead of 200. Health gain per level was also reduced to match the
+30% per level that every other survivor uses, which will make him noticeably less tanky later on. He's still a slow melee
+survivor with no mobility, so I've kept his armor as is, but his health stats were way outside of normal survivor numbers
+in the base mod.
 
-### Notes
+### Lysate Cell
 
-**Ghoul Limit** replaces the "Ghoul limit" setting in Mortician's own config, which is ignored while this mod is
-enabled.
+Despite how strong Mortician is, I was genuinely surprised to learn that Lysate Cell did not work on the tombstone at all.
+This felt like a power gap that I could fill rather than one to reign in. Engineer gets an extra turret from a Lysate Cell, 
+after all. So now Mortician gets an extra tombstone. With two up, a slain ghoul's vengeful soul goes to whichever tombstone
+is nearest to where it died.
 
-**Detonation Scales With Mortician.** A sacrificed ghoul's explosion normally scales with the ghoul's damage stat.
-Ghouls don't copy your items, so the explosion falls behind as your build grows. With this on, it scales with your own
-damage stat instead, picking up anything that raises it, such as Shaped Glass or Chronic Expansion. It always used your
-crit chance and on-hit items.
+### Ancient Scepter
 
-**Aspect Inherit Chance.** In the base mod, every ghoul copies whatever is in your equipment slot. Ghouls never activate
-equipment, so the only thing this really does is pass on an elite aspect, making the ghoul that elite. (Or the fuel
-array, lol) BalancedMortician turned the copying off entirely, which was a solid call, but I rather liked the idea of
-ghouls being able to inherit aspects.
+With [Standalone Ancient Scepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed,
+the Scepter upgrades Tombstone into **Restless Grave**: enemies that die near one of your tombstones rise as ghouls,
+up to one every 3 seconds per tombstone.
 
-This setting replaces both with a chance per aspect. Each new ghoul rolls once for an elite aspect in your equipment
-slot, and once for every copy of an aspect item you hold, from mods
-like [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/) (any item with "Aspect" in its name). Holding
-3 of one aspect item and 1 of another gives 4 rolls, and each success passes on one copy. No other items or equipment
-are ever copied.
+![The Restless Grave skill tooltip](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/RestlessGrave.png)
 
-The `EvenMoreBalanced` preset uses 33%, so the more aspects you carry, the more likely a ghoul inherits at least one. It's
-a middle ground between the base mod's "always" and BalancedMortician's "never". The Original preset's 100% matches the
-base mod for equipment, but also passes on aspect items, which the base mod never did. If you do not use ZetAspects, you
-may want to increase this a little.
+A ring on the ground shows the raise radius. Each player can hide it with
+_Visuals → Show Raise Radius_, which only affects their own screen.
 
-**Lysate Cell Compatibility.**  Holding a Lysate Cell now lets you keep 2 tombstones up at once, the same way it gives
-Engineer an extra turret. Despite how overpowered Mortician feels in the base mod, I was surprised to learn it doesn't
-actually support the Lysate Cell the same way that Engineer does. So although many of the rebalance number nerfs could
-be considered harsh, this mod gives full compatibility to this item. Disabled with the two other presets to maintain
-parity with their default behaviors, and enabled in my own.
+The Scepter mod is not required. Without it, Tombstone works as usual.
 
-**Restless Grave.**
-With [Standalone Ancient Scepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed, the
-Ancient Scepter upgrades Tombstone into Restless Grave: enemies slain near one of your tombstones rise as ghouls. Each
-tombstone has its own internal cooldown, and a kill goes to the nearest tombstone in range that is ready. Risen ghouls are
-ordinary ghouls, so they decay, count toward the Ghoul Limit, can inherit aspects, and give vengeful souls when slain.
+### Elite aspects
 
-_The Standalone Scepter mod is **not** required._ Without it, the associated settings simply do nothing. With "Enabled"
-off, the Scepter treats Mortician as a survivor it can't upgrade, the same as before this feature existed.
+In the base mod, every ghoul copies whatever is in your equipment slot, regardless of the item. I _suspect_ that this was
+meant to propogate passives like Elite Aspect Equipment, but it's hard to know for certain. The problem is that the default
+implementation worked on things like Fuel Array as well (lol). BalancedMortician turned that off entirely, which was fair,
+but I liked ghouls turning elite too much to lose it.
 
-While you have Restless Grave, your tombstones show a ring on the ground marking the raise radius, visible to every
-player. Each player can hide it with **Visuals → Show Raise Radius**, which only affects their own screen.
+Now each new ghoul has a 33% chance to inherit each aspect you're carrying. That covers aspect equipment, and aspect items
+from mods like [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/), which roll once per copy you hold.
+Nothing else is ever copied. If you don't play with ZetAspects, you may want to increase this, but follow your gut.
+
+## Don't like my numbers?
+
+Everything above is a setting, from base stats to cooldowns and proc coefficients, and you can change it in game with
+[Risk Of Options](https://thunderstore.io/c/riskofrain2/p/Rune580/Risk_Of_Options/) or in the config file. Each
+setting's description lists its value in every preset, and skill tooltips update to match.
+
+If you'd rather not tune things yourself, there are two other presets to fall back on:
+
+- **Original** keeps Mortician's own numbers.
+- **BalancedMortician** matches Bloonjitsu7's mod.
+
+Both keep the Lysate Cell and Ancient Scepter support, since neither original mod had any. Everything else, Sacrifice
+scaling included, follows the respective source mod.
+
+Changing any setting switches you to the Custom preset. While you stay on a preset, updating this mod moves you to that
+preset's new values.
+
+**NOTE: This mod's Ghoul Limit setting replaces the one in Mortician's own config, which will be _ignored_ while this mod is enabled.**
 
 ## Multiplayer
 
-The host's settings apply to every player in the lobby. Your own config is left untouched and applies again whenever you
-host or play solo.
-
-Every player needs the same version of this mod to join a lobby.
+The host's settings apply to everyone in the lobby, and your own config comes back whenever you host or play solo.
+Every player needs the same version of this mod.
 
 ## Credits
 
