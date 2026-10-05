@@ -19,6 +19,8 @@ internal static class SkillDescriptions
 
     private static Dictionary<string, string> BuildDescriptions(MorticianSettings settings) => new()
     {
+        [TokenPrefix + "PASSIVE_DESCRIPTION"] = PassiveDescription(settings.GhoulOnKillTriggerChance.Value),
+
         [TokenPrefix + "PRIMARY_SHOVEL_DESCRIPTION"] =
             $"Swing your shovel for {Damage(settings.ShovelDamagePercent.Value)}. " +
             $"Hit ghouls and tombstones to <style=cIsUtility>launch</style> them for {Damage(settings.LaunchDamagePercent.Value)}.",
@@ -36,6 +38,13 @@ internal static class SkillDescriptions
 
         [RestlessGraveSkill.NameToken] = "Restless Grave",
         [RestlessGraveSkill.DescriptionToken] = TombstoneDescription(settings) + RestlessGraveDescription(settings),
+    };
+
+    private static string PassiveDescription(float triggerChancePercent) => triggerChancePercent switch
+    {
+        <= 0f => "Ghouls do not activate your On-Kill effects.",
+        >= 100f => "Ghouls <style=cIsUtility>activate your On-Kill effects</style> when they die.",
+        _ => $"Ghouls have a <style=cIsUtility>{Number(triggerChancePercent)}% chance</style> to <style=cIsUtility>activate your On-Kill effects</style> when they die.",
     };
 
     private static string TombstoneDescription(MorticianSettings settings) =>

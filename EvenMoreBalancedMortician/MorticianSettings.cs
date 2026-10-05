@@ -61,6 +61,7 @@ internal sealed class MorticianSettings
     public PresetSetting<float> GhoulSpitDamagePercent { get; }
     public PresetSetting<float> GhoulSpitProcCoefficient { get; }
     public PresetSetting<float> GhoulAspectInheritChance { get; }
+    public PresetSetting<float> GhoulOnKillTriggerChance { get; }
 
     public PresetSetting<float> SacrificeCooldown { get; }
     public PresetSetting<bool> DetonationScalesWithMortician { get; }
@@ -194,9 +195,13 @@ internal sealed class MorticianSettings
             Presets(original: 1f, balancedMortician: 1f, evenMoreBalanced: 0.7f),
             vanilla: ProcCoefficientVanilla);
         GhoulAspectInheritChance = Bind(SecondarySection, "Aspect Inherit Chance Percent",
-            "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once. Aspect items roll once for every copy you hold, and each success passes on one copy. 0 disables. Ghouls never copy any other items or equipment.",
+            "Chance for a newly raised ghoul to copy each elite aspect Mortician holds. An aspect equipment rolls once. Aspect items roll once for every copy you hold, and each success passes on one copy. Luck (such as 57 Leaf Clover) improves each roll. 0 disables. Ghouls never copy any other items or equipment.",
             Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 33f),
             note: "Aspect items are any item with \"Aspect\" in its name, such as ZetAspects' aspect items. The Original preset matches the base mod for aspect equipment, but the base mod never passed on aspect items.");
+        GhoulOnKillTriggerChance = Bind(SecondarySection, "On-Kill Trigger Chance Percent",
+            "Chance for a dying ghoul to trigger Mortician's on-kill items, as if he had killed it. Rolls on every ghoul death: slain by enemies, sacrificed, decayed, or replaced under the Ghoul Limit. Luck (such as 57 Leaf Clover) improves the roll. 0 disables.",
+            Presets(original: 100f, balancedMortician: 100f, evenMoreBalanced: 50f),
+            note: "Ghouls raised by the tombstone or by Restless Grave roll too.");
 
         SacrificeCooldown = Bind(UtilitySection, "Cooldown",
             "Seconds Sacrifice takes to recharge. Cooldown reduction items still apply.",

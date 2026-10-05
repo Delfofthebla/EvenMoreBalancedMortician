@@ -43,7 +43,7 @@ internal sealed class RaiseRadiusIndicator : MonoBehaviour
         if (!_indicator)
             return;
 
-        var isVisible = _isShown.Value && _radius.Value > 0f && RestlessGraveSkill.IsEquippedBy(TombstoneOwner.BodyOf(_tombstone));
+        var isVisible = _isShown.Value && _radius.Value > 0f && RestlessGraveSkill.IsEquippedBy(MinionOwner.BodyOf(_tombstone));
         if (_indicator.activeSelf != isVisible)
             _indicator.SetActive(isVisible);
 

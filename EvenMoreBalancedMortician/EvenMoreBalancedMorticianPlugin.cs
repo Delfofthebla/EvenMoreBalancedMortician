@@ -40,12 +40,14 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         ShovelDamageSourcePatch.Install(_settings.ShovelCountsAsPrimarySkill);
         GhoulEquipmentPatch.Install();
         GhoulAspectPatch.Install(_settings.GhoulAspectInheritChance);
+        GhoulOnKillPatch.Install(_settings.GhoulOnKillTriggerChance);
         ProcCoefficientPatch.Install(_settings);
         GhoulLimitPatch.Install(_settings.GhoulLimit);
         DetonationDamagePatch.Install(_settings.DetonationScalesWithMortician);
         TombstoneDurationPatch.Install(_settings.TombstoneDuration);
         TombstoneLimitPatch.Install(_settings.LysateCellAddsTombstone);
         TombstoneSoulPatch.Install(_settings.TombstoneSoulRecipient);
+        MinionOwnerPatch.Install();
         InstallAncientScepterSupport();
 
         ApplySettings();

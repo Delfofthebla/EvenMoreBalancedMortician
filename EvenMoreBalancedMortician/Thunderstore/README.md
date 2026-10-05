@@ -26,6 +26,11 @@ Sacrifice now scales with _your_ damage stat instead of the ghoul's. Ghouls don'
 explosion fell off hard late in a run. It still kinda does, but at least you can _technically_ scale it. Now it deals 800%
 of your damage over a slightly bigger radius, and anything that boosts your damage, (like Shaped Glass) boosts it too.
 
+Mortician's passive in the base mod was pretty nutty. Every single ghoul death, regardless of how it happened, counted as
+a on-kill proc. When you've got a ton of backup mags, an ancient scepter, and a lysate cell things got pretty insane.
+but ghouls you sacrifice and ghouls that simply decay, too. Ghouls are cheap, so that's a guaranteed on-kill proc on
+tap. Now each ghoul death has a 50% chance to trigger your on-kill items instead (affected by Luck).
+
 The tombstone crumbles after 30 seconds instead of sticking around forever, and its vengeful souls hit for 280% instead
 of 350%.
 
@@ -47,7 +52,7 @@ With [Standalone Ancient Scepter](https://thunderstore.io/package/amogus_lovers/
 the Scepter upgrades Tombstone into **Restless Grave**: enemies that die near one of your tombstones rise as ghouls,
 up to one every 3 seconds per tombstone.
 
-![The Restless Grave skill tooltip](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/RestlessGrave.png)
+![The Restless Grave Upgrade](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/RestlessGrave.png)
 
 A ring on the ground shows the raise radius. Each player can hide it with
 _Visuals → Show Raise Radius_, which only affects their own screen.
@@ -61,7 +66,7 @@ meant to propogate passives like Elite Aspect Equipment, but it's hard to know f
 implementation worked on things like Fuel Array as well (lol). BalancedMortician turned that off entirely, which was fair,
 but I liked ghouls turning elite too much to lose it.
 
-Now each new ghoul has a 33% chance to inherit each aspect you're carrying. That covers aspect equipment, and aspect items
+Now each new ghoul has a 33% chance to inherit each aspect you're carrying (affected by Luck). That covers aspect equipment, and aspect items
 from mods like [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/), which roll once per copy you hold.
 Nothing else is ever copied. If you don't play with ZetAspects, you may want to increase this, but follow your gut.
 

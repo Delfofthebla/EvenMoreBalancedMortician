@@ -7,6 +7,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
+using RoR2;
 using UnityEngine;
 
 namespace EvenMoreBalancedMortician.Patches;
@@ -53,6 +54,18 @@ internal static class TombstoneSoulPatch
         var newestRemaining = _liveTombstones.LastOrDefault(tombstone => tombstone.ownerLocator == ownerLocator);
         if (newestRemaining)
             ownerLocator.SetActiveTombstone(newestRemaining);
+    }
+
+    public static void HandOverTombstones(CharacterMaster owner, TombstoneLocator ownerLocator)
+    {
+        var ownedTombstones = _liveTombstones.Where(tombstone => MinionOwner.MasterOf(tombstone.characterBody) == owner).ToList();
+        if (ownedTombstones.Count == 0)
+            return;
+
+        foreach (var tombstone in ownedTombstones)
+            tombstone.ownerLocator = ownerLocator;
+
+        ownerLocator.SetActiveTombstone(ownedTombstones.Last());
     }
 
     private static void DeliverSoulsBySetting(ILContext il)

@@ -1,5 +1,9 @@
 #### 1.3.0
 
+**Added**
+- New Config Setting "On-Kill Trigger Chance Percent": the chance for a dying ghoul to trigger your on-kill items. Mortician's passive triggers them on every ghoul death, including sacrificed and decayed ghouls. 50% in the EvenMoreBalanced preset, 100% (unchanged) in the others. The passive's tooltip follows the setting.
+- Luck (57 Leaf Clover, Purity) now applies to the on-kill trigger roll and to every aspect inheritance roll.
+
 **Changed** (Original and BalancedMortician presets)
 
 Neither original mod supported the Lysate Cell or the Ancient Scepter, so these presets now include this mod's support for both. Their balance numbers are unchanged.
@@ -7,6 +11,10 @@ Neither original mod supported the Lysate Cell or the Ancient Scepter, so these 
 - Soul Recipient: Newest → Nearest
 - Restless Grave: off → on
 - Restless Grave Raise Radius: 25 → 30
+
+**Fixed** (base mod bugs)
+- After Mortician died, his tombstone raised ghouls with no owner and logged an error for each one. Ghouls raised while you're dead now belong to you.
+- After a revive (such as Dio's Best Friend), your existing ghouls and tombstones stopped crediting you for their attacks, and your tombstone stopped collecting vengeful souls. They now properly reconnect to you when you're revived.
 
 #### 1.2.0
 

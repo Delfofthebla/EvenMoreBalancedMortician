@@ -16,7 +16,7 @@ internal sealed class GraveRaiser : MonoBehaviour
     private Run.FixedTimeStamp _readyAt = Run.FixedTimeStamp.negativeInfinity;
 
     private TeamIndex Team => _tombstoneBody.teamComponent.teamIndex;
-    private CharacterBody Owner => TombstoneOwner.BodyOf(_tombstoneBody);
+    private CharacterBody Owner => MinionOwner.BodyOf(_tombstoneBody);
 
     private void Awake()
     {
