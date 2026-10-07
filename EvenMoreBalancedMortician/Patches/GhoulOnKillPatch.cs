@@ -1,5 +1,6 @@
 using System;
 using EvenMoreBalancedMortician.Presets;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
@@ -11,10 +12,12 @@ internal static class GhoulOnKillPatch
 {
     private static ILHook _ghoulDeathHook;
     private static PresetSetting<float> _triggerChancePercent;
+    private static PresetSetting<bool> _sacrificeGuaranteesTrigger;
 
-    public static void Install(PresetSetting<float> triggerChancePercent)
+    public static void Install(PresetSetting<float> triggerChancePercent, PresetSetting<bool> sacrificeGuaranteesTrigger)
     {
         _triggerChancePercent = triggerChancePercent;
+        _sacrificeGuaranteesTrigger = sacrificeGuaranteesTrigger;
 
         var ghoulDeath = typeof(MorrisMinionController).GetMethod(nameof(MorrisMinionController.OnDeathStart));
         _ghoulDeathHook = new ILHook(ghoulDeath, RollForOnKillTrigger);
@@ -33,12 +36,15 @@ internal static class GhoulOnKillPatch
         }
 
         cursor.Remove();
-        cursor.EmitDelegate<Action<GlobalEventManager, DamageReport>>(TriggerOnKillByChance);
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.EmitDelegate<Action<GlobalEventManager, DamageReport, MorrisMinionController>>(TriggerOnKill);
     }
 
-    private static void TriggerOnKillByChance(GlobalEventManager eventManager, DamageReport ghoulDeath)
+    private static void TriggerOnKill(GlobalEventManager eventManager, DamageReport ghoulDeath, MorrisMinionController ghoul)
     {
-        if (Util.CheckRoll(_triggerChancePercent.Value, ghoulDeath.attackerMaster))
+        if (IsGuaranteed(ghoul) || Util.CheckRoll(_triggerChancePercent.Value, ghoulDeath.attackerMaster))
             eventManager.OnCharacterDeath(ghoulDeath);
     }
+
+    private static bool IsGuaranteed(MorrisMinionController ghoul) => ghoul.sacrificed && _sacrificeGuaranteesTrigger.Value;
 }

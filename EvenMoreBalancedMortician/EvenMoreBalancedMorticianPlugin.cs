@@ -24,7 +24,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
 {
     public const string Guid = "com.Delfofthebla.EvenMoreBalancedMortician";
     public const string Name = "EvenMoreBalancedMortician";
-    public const string Version = "1.3.0";
+    public const string Version = "1.4.0";
 
     private const string BalancedMorticianGuid = "com.Bloonjitsu7.BalancedMortician";
 
@@ -40,7 +40,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         ShovelDamageSourcePatch.Install(_settings.ShovelCountsAsPrimarySkill);
         GhoulEquipmentPatch.Install();
         GhoulAspectPatch.Install(_settings.GhoulAspectInheritChance);
-        GhoulOnKillPatch.Install(_settings.GhoulOnKillTriggerChance);
+        GhoulOnKillPatch.Install(_settings.GhoulOnKillTriggerChance, _settings.SacrificeGuaranteesOnKill);
         ProcCoefficientPatch.Install(_settings);
         GhoulLimitPatch.Install(_settings.GhoulLimit);
         DetonationDamagePatch.Install(_settings.DetonationScalesWithMortician);

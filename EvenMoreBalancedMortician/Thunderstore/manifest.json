@@ -1,6 +1,6 @@
 {
   "name": "Even_More_Balanced_Mortician",
-  "version_number": "1.3.0",
+  "version_number": "1.4.0",
   "website_url": "https://github.com/Delfofthebla/EvenMoreBalancedMortician",
   "description": "Configurable rebalance of the Mortician survivor. Every base stat, skill number, and mechanical change is configurable, with presets for the original, BalancedMortician, and this rebalance.",
   "dependencies": [

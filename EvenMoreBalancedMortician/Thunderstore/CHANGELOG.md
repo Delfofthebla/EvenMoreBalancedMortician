@@ -1,3 +1,10 @@
+#### 1.4.0
+
+**Added**
+- New Config Setting "Guarantees On-Kill Trigger" (Sacrifice): a sacrificed ghoul always triggers your on-kill items, skipping the On-Kill Trigger Chance roll. On in every preset. The passive's tooltip mentions it while the chance is below 100%.
+
+Players on 1.3.0 cannot join a lobby hosted on 1.4.0, or the reverse.
+
 #### 1.3.0
 
 **Added**

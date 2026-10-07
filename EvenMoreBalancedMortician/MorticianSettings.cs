@@ -69,6 +69,7 @@ internal sealed class MorticianSettings
     public PresetSetting<float> SacrificeProcCoefficient { get; }
     public PresetSetting<float> SacrificeRadius { get; }
     public PresetSetting<float> SacrificeHealPercent { get; }
+    public PresetSetting<bool> SacrificeGuaranteesOnKill { get; }
 
     public PresetSetting<float> TombstoneCooldown { get; }
     public PresetSetting<float> TombstoneDuration { get; }
@@ -199,7 +200,7 @@ internal sealed class MorticianSettings
             Presets(original: 100f, balancedMortician: 0f, evenMoreBalanced: 33f),
             note: "Aspect items are any item with \"Aspect\" in its name, such as ZetAspects' aspect items. The Original preset matches the base mod for aspect equipment, but the base mod never passed on aspect items.");
         GhoulOnKillTriggerChance = Bind(SecondarySection, "On-Kill Trigger Chance Percent",
-            "Chance for a dying ghoul to trigger Mortician's on-kill items, as if he had killed it. Rolls on every ghoul death: slain by enemies, sacrificed, decayed, or replaced under the Ghoul Limit. Luck (such as 57 Leaf Clover) improves the roll. 0 disables.",
+            "Chance for a dying ghoul to trigger Mortician's on-kill items, as if he had killed it. Rolls on every ghoul death: slain by enemies, sacrificed (unless Guarantees On-Kill Trigger is on), decayed, or replaced under the Ghoul Limit. Luck (such as 57 Leaf Clover) improves the roll. 0 disables.",
             Presets(original: 100f, balancedMortician: 100f, evenMoreBalanced: 50f),
             note: "Ghouls raised by the tombstone or by Restless Grave roll too.");
 
@@ -223,6 +224,10 @@ internal sealed class MorticianSettings
         SacrificeHealPercent = Bind(UtilitySection, "Heal Percent",
             "Percent of Mortician's maximum health healed by each Sacrifice.",
             Presets(original: 15f, balancedMortician: 15f, evenMoreBalanced: 15f));
+        SacrificeGuaranteesOnKill = Bind(UtilitySection, "Guarantees On-Kill Trigger",
+            "Whether a sacrificed ghoul always triggers Mortician's on-kill items, skipping the On-Kill Trigger Chance roll (" + SecondarySection + ").",
+            Presets(original: true, balancedMortician: true, evenMoreBalanced: true),
+            note: "The Original and BalancedMortician presets trigger on-kill items on every ghoul death regardless.");
 
         TombstoneCooldown = Bind(SpecialSection, "Cooldown",
             "Seconds the Tombstone takes to recharge. Cooldown reduction items still apply.",

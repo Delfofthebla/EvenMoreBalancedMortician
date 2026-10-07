@@ -19,7 +19,7 @@ internal static class SkillDescriptions
 
     private static Dictionary<string, string> BuildDescriptions(MorticianSettings settings) => new()
     {
-        [TokenPrefix + "PASSIVE_DESCRIPTION"] = PassiveDescription(settings.GhoulOnKillTriggerChance.Value),
+        [TokenPrefix + "PASSIVE_DESCRIPTION"] = PassiveDescription(settings.GhoulOnKillTriggerChance.Value, settings.SacrificeGuaranteesOnKill.Value),
 
         [TokenPrefix + "PRIMARY_SHOVEL_DESCRIPTION"] =
             $"Swing your shovel for {Damage(settings.ShovelDamagePercent.Value)}. " +
@@ -40,11 +40,13 @@ internal static class SkillDescriptions
         [RestlessGraveSkill.DescriptionToken] = TombstoneDescription(settings) + RestlessGraveDescription(settings),
     };
 
-    private static string PassiveDescription(float triggerChancePercent) => triggerChancePercent switch
+    private static string PassiveDescription(float triggerChancePercent, bool sacrificeGuaranteesTrigger) => triggerChancePercent switch
     {
-        <= 0f => "Ghouls do not activate your On-Kill effects.",
         >= 100f => "Ghouls <style=cIsUtility>activate your On-Kill effects</style> when they die.",
-        _ => $"Ghouls have a <style=cIsUtility>{Number(triggerChancePercent)}% chance</style> to <style=cIsUtility>activate your On-Kill effects</style> when they die.",
+        <= 0f when sacrificeGuaranteesTrigger => "<style=cIsHealth>Sacrificed</style> ghouls <style=cIsUtility>activate your On-Kill effects</style>.",
+        <= 0f => "Ghouls do not activate your On-Kill effects.",
+        _ => $"Ghouls have a <style=cIsUtility>{Number(triggerChancePercent)}% chance</style> to <style=cIsUtility>activate your On-Kill effects</style> when they die." +
+             (sacrificeGuaranteesTrigger ? " <style=cIsHealth>Sacrificed</style> ghouls always do." : ""),
     };
 
     private static string TombstoneDescription(MorticianSettings settings) =>

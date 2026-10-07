@@ -21,15 +21,16 @@ nerf went. The swing drops from 800% to 340% damage, but now counts as primary s
 work with it. Flinging a ghoul or tombstone goes up a little, from 350% to 400%, which hits the breakpoint for items
 that need a 400% hit.
 
-Ghouls hit a bit softer (8 base damage instead of 12) and their spit's proc coefficient was nerfed a little. In exchange,
-Sacrifice now scales with _your_ damage stat instead of the ghoul's. Ghouls don't carry your items, so the original
-explosion fell off hard late in a run. It still kinda does, but at least you can _technically_ scale it. Now it deals 800%
-of your damage over a slightly bigger radius, and anything that boosts your damage, (like Shaped Glass) boosts it too.
+Ghouls got a big damage nerf (8 base damage instead of 12) and their spit's proc coefficient was dropped from 1.0 to 0.7.
+However sacrifice now scales with _your_ damage stat instead of the ghoul's. Ghouls don't carry your items, so the original
+explosion fell off hard late in a run, and the damage nerf would have made it even worse. Honestly it still falls off a bit,
+but at least you can _technically_ scale it. I've bumped it up to 800% of your damage over a slightly bigger radius, and
+anything that boosts your damage, (like Shaped Glass) boosts it too.
 
 Mortician's passive in the base mod was pretty nutty. Every single ghoul death, regardless of how it happened, counted as
 a on-kill proc. When you've got a ton of backup mags, an ancient scepter, and a lysate cell things got pretty insane.
-but ghouls you sacrifice and ghouls that simply decay, too. Ghouls are cheap, so that's a guaranteed on-kill proc on
-tap. Now each ghoul death has a 50% chance to trigger your on-kill items instead (affected by Luck).
+Even in the base mod the proc-chaining could get pretty crazy just by letting ghouls die. Regardless, now each ghoul death
+has a 50% chance to trigger your on-kill items instead (affected by Luck), but sacrificing a ghoul still guarantees it.
 
 The tombstone crumbles after 30 seconds instead of sticking around forever, and its vengeful souls hit for 280% instead
 of 350%.
