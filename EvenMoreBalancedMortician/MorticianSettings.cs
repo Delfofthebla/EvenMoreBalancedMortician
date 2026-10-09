@@ -88,6 +88,8 @@ internal sealed class MorticianSettings
 
     public ConfigEntry<bool> ShowRaiseRadius { get; }
 
+    public ConfigEntry<string> ConfigVersion { get; }
+
     public MorticianSettings(ConfigFile config)
     {
         _config = config;
@@ -97,7 +99,7 @@ internal sealed class MorticianSettings
             "EvenMoreBalanced: Delf's rebalance.\n" +
             "BalancedMortician: Equivalent to Bloonjitsu7's BalancedMortician mod. \n" +
             "Original: Mortician's original numbers.");
-        var configVersion = config.Bind(GeneralSection, "Config Version", "",
+        ConfigVersion = config.Bind(GeneralSection, "Config Version", "",
             "DO NOT EDIT. Updated automatically.\n" +
             "The mod version that last loaded this config. When the mod updates, every setting is moved to the selected preset's new values, unless the preset is Custom.");
 
@@ -288,7 +290,7 @@ internal sealed class MorticianSettings
             "Whether tombstones show a ring marking the Restless Grave raise radius while their owner has the Ancient Scepter upgrade.\n" +
             "This only affects your own screen, so the host's settings never override it.");
 
-        PresetSelector = new PresetSelector(config, preset, configVersion, EvenMoreBalancedMorticianPlugin.Version, _presetSettings);
+        PresetSelector = new PresetSelector(config, preset, ConfigVersion, EvenMoreBalancedMorticianPlugin.Version, _presetSettings);
     }
 
     public string[] SerializeLocalValues() => _presetSettings.Select(setting => setting.SerializedLocalValue).ToArray();

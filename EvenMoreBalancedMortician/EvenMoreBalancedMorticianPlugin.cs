@@ -18,6 +18,7 @@ namespace EvenMoreBalancedMortician;
 [BepInDependency(LanguageAPI.PluginGUID)]
 [BepInDependency(DeployableAPI.PluginGUID)]
 [BepInDependency(NetworkingAPI.PluginGUID)]
+[BepInDependency(RiskOfOptionsMenu.Guid, BepInDependency.DependencyFlags.SoftDependency)]
 [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
 [BepInIncompatibility(BalancedMorticianGuid)]
 public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
@@ -53,6 +54,8 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         ApplySettings();
         _settings.PresetSelector.SettingsChanged += ApplySettings;
         HostSettingsSync.Install(_settings, ApplySettings);
+
+        RiskOfOptionsMenu.Register(this, Log, entry => entry == _settings.ConfigVersion);
     }
 
     private void InstallAncientScepterSupport()
