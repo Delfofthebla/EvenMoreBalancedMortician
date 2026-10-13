@@ -48,7 +48,6 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         TombstoneDurationPatch.Install(_settings.TombstoneDuration);
         TombstoneLimitPatch.Install(_settings.LysateCellAddsTombstone);
         TombstoneSoulPatch.Install(_settings.TombstoneSoulRecipient);
-        MinionOwnerPatch.Install();
         InstallAncientScepterSupport();
 
         ApplySettings();
