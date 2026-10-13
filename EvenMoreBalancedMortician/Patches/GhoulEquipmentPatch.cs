@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -29,14 +30,20 @@ internal static class GhoulEquipmentPatch
     private static void RemoveEquipmentCopyCall(ILContext il)
     {
         var cursor = new ILCursor(il);
-        if (!cursor.TryGotoNext(instruction => instruction.MatchCallvirt<Inventory>(nameof(Inventory.CopyEquipmentFrom))))
+        MethodReference equipmentCopy = null;
+        if (!cursor.TryGotoNext(instruction => instruction.MatchCallvirt(out equipmentCopy) && IsEquipmentCopy(equipmentCopy)))
         {
             EvenMoreBalancedMorticianPlugin.Log.LogError($"Could not find the equipment copy in {il.Method.Name}; ghouls will still copy Mortician's equipment.");
             return;
         }
 
         cursor.Remove();
-        cursor.Emit(OpCodes.Pop);
-        cursor.Emit(OpCodes.Pop);
+
+        var instanceAndArguments = equipmentCopy.Parameters.Count + 1;
+        for (var i = 0; i < instanceAndArguments; i++)
+            cursor.Emit(OpCodes.Pop);
     }
+
+    private static bool IsEquipmentCopy(MethodReference method)
+        => method.Name == nameof(Inventory.CopyEquipmentFrom) && method.DeclaringType.FullName == typeof(Inventory).FullName;
 }

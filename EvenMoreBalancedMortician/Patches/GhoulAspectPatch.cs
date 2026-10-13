@@ -58,7 +58,8 @@ internal static class GhoulAspectPatch
         if (!RollInheritChance(owner))
             return;
 
-        ghoulInventory.SetEquipmentIndex(equipment, false);
+        var location = ghoulInventory.FindBestEquipmentLocationOrCurrent(Inventory.EquipmentLocationQueryArgs.defaultPickup);
+        ghoulInventory.SetEquipmentIndex(equipment, location);
     }
 
     private static void InheritAspectItemStacks(ItemIndex aspect, CharacterMaster owner, Inventory ghoulInventory)

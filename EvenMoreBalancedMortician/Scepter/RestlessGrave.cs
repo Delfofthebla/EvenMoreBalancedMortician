@@ -27,7 +27,7 @@ internal static class RestlessGrave
 
         _tombstoneStartHook = new Hook(MorticianMethods.TombstoneStart, (Action<Action<TombstoneController>, TombstoneController>)AddRestlessGraveComponents);
 
-        GlobalEventManager.onCharacterDeathGlobal += RaiseSlainEnemy;
+        GlobalEventManager.onDeathProcServer += RaiseSlainEnemy;
     }
 
     private static void AddRestlessGraveComponents(Action<TombstoneController> orig, TombstoneController self)

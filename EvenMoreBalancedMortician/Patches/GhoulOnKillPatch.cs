@@ -27,7 +27,7 @@ internal static class GhoulOnKillPatch
     {
         var cursor = new ILCursor(il);
         var foundOnKillTrigger = cursor.TryGotoNext(
-            instruction => instruction.MatchCallvirt<GlobalEventManager>(nameof(GlobalEventManager.OnCharacterDeath)));
+            instruction => instruction.MatchCallvirt<GlobalEventManager>(nameof(GlobalEventManager.TriggerCharacterDeathProc)));
 
         if (!foundOnKillTrigger)
         {
@@ -43,7 +43,7 @@ internal static class GhoulOnKillPatch
     private static void TriggerOnKill(GlobalEventManager eventManager, DamageReport ghoulDeath, MorrisMinionController ghoul)
     {
         if (IsGuaranteed(ghoul) || Util.CheckRoll(_triggerChancePercent.Value, ghoulDeath.attackerMaster))
-            eventManager.OnCharacterDeath(ghoulDeath);
+            eventManager.TriggerCharacterDeathProc(ghoulDeath);
     }
 
     private static bool IsGuaranteed(MorrisMinionController ghoul) => ghoul.sacrificed && _sacrificeGuaranteesTrigger.Value;
