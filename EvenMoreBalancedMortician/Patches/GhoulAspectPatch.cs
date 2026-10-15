@@ -10,7 +10,7 @@ namespace EvenMoreBalancedMortician.Patches;
 
 internal static class GhoulAspectPatch
 {
-    private const string AspectNameFragment = "Aspect";
+    private static readonly string AspectNameFragment = "Aspect";
 
     private static readonly HashSet<string> _detectedAspects = [];
 
@@ -21,7 +21,7 @@ internal static class GhoulAspectPatch
     {
         _inheritChancePercent = inheritChancePercent;
 
-        _minionStartHook = new Hook(MorticianMethods.MinionStart, (Action<Action<MorrisMinionController>, MorrisMinionController>)InheritAspects);
+        _minionStartHook = new Hook(MorticianMethods.MinionStart, InheritAspects);
     }
 
     private static void InheritAspects(Action<MorrisMinionController> orig, MorrisMinionController self)
@@ -83,8 +83,7 @@ internal static class GhoulAspectPatch
         return equipmentDef && equipmentDef.passiveBuffDef && equipmentDef.passiveBuffDef.isElite;
     }
 
-    private static bool IsAspectItem(ItemIndex item)
-        => ItemCatalog.GetItemDef(item).name.IndexOf(AspectNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
+    private static bool IsAspectItem(ItemIndex item) => ItemCatalog.GetItemDef(item).name.IndexOf(AspectNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
 
     private static bool RollInheritChance(CharacterMaster owner) => Util.CheckRoll(_inheritChancePercent.Value, owner);
 

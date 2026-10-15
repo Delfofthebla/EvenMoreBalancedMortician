@@ -12,42 +12,34 @@ namespace EvenMoreBalancedMortician.Scepter;
 // Every method that touches AncientScepter's types is kept out of line so AncientScepter.dll is only loaded when the mod is installed.
 internal static class AncientScepterCompat
 {
-    public const string Guid = "com.DestroyedClone.AncientScepter";
+    public const string GUID = "com.DestroyedClone.AncientScepter";
 
     private delegate bool TryGetScepterSlot(AncientScepterItem self, CharacterBody body, out SkillSlot slot);
-    private delegate bool TryGetScepterSlotHook(TryGetScepterSlot orig, AncientScepterItem self, CharacterBody body, out SkillSlot slot);
 
     private static Hook _handleScepterSkillHook;
     private static Hook _tryGetScepterSlotHook;
     private static Func<CharacterBody, bool> _isUpgradeWithheld;
 
-    public static bool IsInstalled => Chainloader.PluginInfos.ContainsKey(Guid);
+    public static bool IsInstalled => Chainloader.PluginInfos.ContainsKey(GUID);
 
     private static AncientScepterItem Scepter => ItemBase<AncientScepterItem>.instance;
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void RegisterSpecialUpgrade(SkillDef upgrade, string bodyName)
-        => Scepter.RegisterScepterSkill(upgrade, bodyName, SkillSlot.Special, 0);
+    public static void RegisterSpecialUpgrade(SkillDef upgrade, string bodyName) => Scepter.RegisterScepterSkill(upgrade, bodyName, SkillSlot.Special, 0);
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void WithholdUpgradeFrom(Func<CharacterBody, bool> isUpgradeWithheld)
     {
         _isUpgradeWithheld = isUpgradeWithheld;
 
-        _handleScepterSkillHook = new Hook(
-            ScepterMethod(nameof(AncientScepterItem.HandleScepterSkill)),
-            (Func<Func<AncientScepterItem, CharacterBody, bool, bool>, AncientScepterItem, CharacterBody, bool, bool>)SkipWithheldUpgrade);
-
-        _tryGetScepterSlotHook = new Hook(
-            ScepterMethod(nameof(AncientScepterItem.TryGetScepterSlot)),
-            (TryGetScepterSlotHook)SkipWithheldCooldownReduction);
+        _handleScepterSkillHook = new Hook(ScepterMethod(nameof(AncientScepterItem.HandleScepterSkill)), SkipWithheldUpgrade);
+        _tryGetScepterSlotHook = new Hook(ScepterMethod(nameof(AncientScepterItem.TryGetScepterSlot)), SkipWithheldCooldownReduction);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ReapplyUpgrade(CharacterBody body) => Scepter.HandleScepterSkill(body);
 
-    private static MethodInfo ScepterMethod(string name)
-        => typeof(AncientScepterItem).GetMethod(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    private static MethodInfo ScepterMethod(string name) => typeof(AncientScepterItem).GetMethod(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
     private static bool SkipWithheldUpgrade(Func<AncientScepterItem, CharacterBody, bool, bool> orig, AncientScepterItem self, CharacterBody body, bool forceOff)
         => !_isUpgradeWithheld(body) && orig(self, body, forceOff);

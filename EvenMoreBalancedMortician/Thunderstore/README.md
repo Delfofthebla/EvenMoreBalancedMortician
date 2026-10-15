@@ -35,6 +35,10 @@ has a 50% chance to trigger your on-kill items instead (affected by Luck), but s
 The tombstone crumbles after 30 seconds instead of sticking around forever, and its vengeful souls hit for 280% instead
 of 350%.
 
+The tombstone's ghoul spawns, and the Restless Grave raise cooldown, now recharge like a special skill. The cooldown
+reduction items it copies from you when placed (Alien Head, Lysate Cell, Purity) speed them up. In the base mod, a
+tombstone raised a ghoul every 10 seconds no matter what you were holding.
+
 Mortician himself is a touch less tanky, at 180 health instead of 200. Health gain per level was also reduced to match the
 30% per level that every other survivor uses, which will make him noticeably less tanky later on. He's still a slow melee
 survivor with no mobility, so I've kept his armor as is, but his health stats were way outside of normal survivor numbers

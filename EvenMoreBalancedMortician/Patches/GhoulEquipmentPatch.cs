@@ -12,7 +12,7 @@ namespace EvenMoreBalancedMortician.Patches;
 
 internal static class GhoulEquipmentPatch
 {
-    private const BindingFlags AnyInstanceMethod = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private static readonly BindingFlags AnyInstanceMethod = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     private static readonly List<ILHook> _hooks = [];
 
@@ -22,10 +22,7 @@ internal static class GhoulEquipmentPatch
         RemoveEquipmentCopy(typeof(TombstoneController).GetMethod(nameof(TombstoneController.SpawnGhoulAtClosestNode), AnyInstanceMethod));
     }
 
-    private static void RemoveEquipmentCopy(MethodInfo ghoulSpawner)
-    {
-        _hooks.Add(new ILHook(ghoulSpawner, RemoveEquipmentCopyCall));
-    }
+    private static void RemoveEquipmentCopy(MethodInfo ghoulSpawner) => _hooks.Add(new ILHook(ghoulSpawner, RemoveEquipmentCopyCall));
 
     private static void RemoveEquipmentCopyCall(ILContext il)
     {
@@ -44,6 +41,5 @@ internal static class GhoulEquipmentPatch
             cursor.Emit(OpCodes.Pop);
     }
 
-    private static bool IsEquipmentCopy(MethodReference method)
-        => method.Name == nameof(Inventory.CopyEquipmentFrom) && method.DeclaringType.FullName == typeof(Inventory).FullName;
+    private static bool IsEquipmentCopy(MethodReference method) => method.Name == nameof(Inventory.CopyEquipmentFrom) && method.DeclaringType.FullName == typeof(Inventory).FullName;
 }

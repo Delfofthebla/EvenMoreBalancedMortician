@@ -16,7 +16,7 @@ internal static class ShovelDamageSourcePatch
         _shovelCountsAsPrimarySkill = countsAsPrimarySkill;
 
         var onEnter = typeof(SwingShovel).GetMethod(nameof(SwingShovel.OnEnter));
-        _swingHook = new Hook(onEnter, (Action<Action<SwingShovel>, SwingShovel>)TagSwingAsPrimaryIfEnabled);
+        _swingHook = new Hook(onEnter, TagSwingAsPrimaryIfEnabled);
     }
 
     private static void TagSwingAsPrimaryIfEnabled(Action<SwingShovel> orig, SwingShovel self)

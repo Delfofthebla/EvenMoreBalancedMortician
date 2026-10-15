@@ -15,17 +15,15 @@ internal static class RestlessGrave
 {
     private static Hook _tombstoneStartHook;
     private static PresetSetting<float> _radius;
-    private static PresetSetting<float> _cooldown;
     private static PresetSetting<int> _risenGhoulLimit;
 
-    public static void Install(PresetSetting<float> radius, PresetSetting<float> cooldown, PresetSetting<int> risenGhoulLimit, ConfigEntry<bool> showRadius)
+    public static void Install(PresetSetting<float> radius, PresetSetting<int> risenGhoulLimit, ConfigEntry<bool> showRadius)
     {
         _radius = radius;
-        _cooldown = cooldown;
         _risenGhoulLimit = risenGhoulLimit;
         RaiseRadiusIndicator.Configure(radius, showRadius);
 
-        _tombstoneStartHook = new Hook(MorticianMethods.TombstoneStart, (Action<Action<TombstoneController>, TombstoneController>)AddRestlessGraveComponents);
+        _tombstoneStartHook = new Hook(MorticianMethods.TombstoneStart, AddRestlessGraveComponents);
 
         GlobalEventManager.onDeathProcServer += RaiseSlainEnemy;
     }
@@ -48,7 +46,7 @@ internal static class RestlessGrave
         var corpsePosition = report.victimBody.corePosition;
         var grave = NearestReadyGrave(report.victimTeamIndex, corpsePosition);
         if (grave)
-            grave.Raise(corpsePosition, _cooldown.Value);
+            grave.Raise(corpsePosition);
     }
 
     private static GraveRaiser NearestReadyGrave(TeamIndex victimTeam, Vector3 corpsePosition)

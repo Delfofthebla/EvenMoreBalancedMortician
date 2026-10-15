@@ -8,7 +8,7 @@ namespace EvenMoreBalancedMortician.Scepter;
 
 internal sealed class RaiseRadiusIndicator : MonoBehaviour
 {
-    private const string IndicatorPrefabKey = "RoR2/Base/Common/TeamAreaIndicator, GroundOnly.prefab";
+    private static readonly string IndicatorPrefabKey = "RoR2/Base/Common/TeamAreaIndicator, GroundOnly.prefab";
 
     private static GameObject _indicatorPrefab;
     private static PresetSetting<float> _radius;

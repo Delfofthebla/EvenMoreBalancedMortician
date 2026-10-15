@@ -32,8 +32,7 @@ internal static class TombstoneSoulPatch
         _ghoulDeathHook = new ILHook(ghoulDeath, DeliverSoulsBySetting);
     }
 
-    private static Hook HookTombstone(MethodInfo method, Action<Action<TombstoneController>, TombstoneController> hook)
-        => new(method, hook);
+    private static Hook HookTombstone(MethodInfo method, Action<Action<TombstoneController>, TombstoneController> hook) => new(method, hook);
 
     private static void TrackTombstone(Action<TombstoneController> orig, TombstoneController self)
     {
@@ -59,8 +58,7 @@ internal static class TombstoneSoulPatch
     private static void DeliverSoulsBySetting(ILContext il)
     {
         var cursor = new ILCursor(il);
-        var foundSoulDelivery = cursor.TryGotoNext(
-            instruction => instruction.MatchCallvirt<TombstoneController>(nameof(TombstoneController.AddSoulStockServer)));
+        var foundSoulDelivery = cursor.TryGotoNext(instruction => instruction.MatchCallvirt<TombstoneController>(nameof(TombstoneController.AddSoulStockServer)));
 
         if (!foundSoulDelivery)
         {
@@ -70,7 +68,7 @@ internal static class TombstoneSoulPatch
 
         cursor.Remove();
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate<Action<TombstoneController, MorrisMinionController>>(DeliverSoul);
+        cursor.EmitDelegate(DeliverSoul);
     }
 
     private static void DeliverSoul(TombstoneController activeTombstone, MorrisMinionController ghoul)
@@ -94,9 +92,7 @@ internal static class TombstoneSoulPatch
     }
 
     private static TombstoneController NearestTombstone(TombstoneController activeTombstone, Vector3 position)
-        => TombstonesSharingOwner(activeTombstone)
-            .OrderBy(tombstone => (tombstone.transform.position - position).sqrMagnitude)
-            .First();
+        => TombstonesSharingOwner(activeTombstone).OrderBy(tombstone => (tombstone.transform.position - position).sqrMagnitude).First();
 
     private static IEnumerable<TombstoneController> TombstonesSharingOwner(TombstoneController activeTombstone)
         => _liveTombstones.Where(tombstone => tombstone.ownerLocator == activeTombstone.ownerLocator);

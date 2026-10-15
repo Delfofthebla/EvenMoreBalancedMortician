@@ -1,4 +1,3 @@
-using System;
 using EvenMoreBalancedMortician.Presets;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -26,8 +25,7 @@ internal static class GhoulOnKillPatch
     private static void RollForOnKillTrigger(ILContext il)
     {
         var cursor = new ILCursor(il);
-        var foundOnKillTrigger = cursor.TryGotoNext(
-            instruction => instruction.MatchCallvirt<GlobalEventManager>(nameof(GlobalEventManager.TriggerCharacterDeathProc)));
+        var foundOnKillTrigger = cursor.TryGotoNext(instruction => instruction.MatchCallvirt<GlobalEventManager>(nameof(GlobalEventManager.TriggerCharacterDeathProc)));
 
         if (!foundOnKillTrigger)
         {
@@ -37,7 +35,7 @@ internal static class GhoulOnKillPatch
 
         cursor.Remove();
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate<Action<GlobalEventManager, DamageReport, MorrisMinionController>>(TriggerOnKill);
+        cursor.EmitDelegate(TriggerOnKill);
     }
 
     private static void TriggerOnKill(GlobalEventManager eventManager, DamageReport ghoulDeath, MorrisMinionController ghoul)

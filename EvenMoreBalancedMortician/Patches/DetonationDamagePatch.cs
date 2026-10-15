@@ -46,7 +46,9 @@ internal static class DetonationDamagePatch
 
         var minion = ghoulDeath.minionController;
         var sacrificer = minion.sacrificeOwner ? minion.sacrificeOwner : minion.owner;
-        var sacrificerBody = sacrificer ? sacrificer.GetComponent<CharacterBody>() : null;
+        var sacrificerBody = sacrificer
+            ? sacrificer.GetComponent<CharacterBody>()
+            : null;
 
         return sacrificerBody ? sacrificerBody.damage : ghoulDamageStat;
     }

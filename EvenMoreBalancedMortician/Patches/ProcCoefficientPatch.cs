@@ -12,7 +12,7 @@ namespace EvenMoreBalancedMortician.Patches;
 
 internal static class ProcCoefficientPatch
 {
-    private const string ProcCoefficientField = "procCoefficient";
+    private static readonly string ProcCoefficientField = "procCoefficient";
 
     private static readonly List<Hook> _hooks = [];
     private static readonly List<ILHook> _ilHooks = [];
@@ -22,8 +22,8 @@ internal static class ProcCoefficientPatch
     {
         _settings = settings;
 
-        _hooks.Add(new Hook(typeof(GhoulMelee).GetMethod(nameof(GhoulMelee.OnEnter)), (Action<Action<GhoulMelee>, GhoulMelee>)SetBiteProcCoefficient));
-        _hooks.Add(new Hook(typeof(BaseLaunchedState).GetMethod(nameof(BaseLaunchedState.OnEnter)), (Action<Action<BaseLaunchedState>, BaseLaunchedState>)SetLaunchProcCoefficient));
+        _hooks.Add(new Hook(typeof(GhoulMelee).GetMethod(nameof(GhoulMelee.OnEnter)), SetBiteProcCoefficient));
+        _hooks.Add(new Hook(typeof(BaseLaunchedState).GetMethod(nameof(BaseLaunchedState.OnEnter)), SetLaunchProcCoefficient));
 
         _ilHooks.Add(new ILHook(typeof(ClingState).GetMethod(nameof(ClingState.Bite)), ReplaceClingBiteProcCoefficient));
         _ilHooks.Add(new ILHook(typeof(GhoulDeath).GetMethod(nameof(GhoulDeath.Explode)), ReplaceDetonationProcCoefficient));
@@ -42,18 +42,14 @@ internal static class ProcCoefficientPatch
         self.attack.procCoefficient = _settings.LaunchProcCoefficient.Value;
     }
 
-    private static void ReplaceClingBiteProcCoefficient(ILContext il)
-        => ReplaceProcCoefficientConstant<DamageInfo>(il, ClingBiteProcCoefficient);
+    private static void ReplaceClingBiteProcCoefficient(ILContext il) => ReplaceProcCoefficientConstant<DamageInfo>(il, ClingBiteProcCoefficient);
 
-    private static void ReplaceDetonationProcCoefficient(ILContext il)
-        => ReplaceProcCoefficientConstant<BlastAttack>(il, DetonationProcCoefficient);
+    private static void ReplaceDetonationProcCoefficient(ILContext il) => ReplaceProcCoefficientConstant<BlastAttack>(il, DetonationProcCoefficient);
 
     private static void ReplaceProcCoefficientConstant<TAttack>(ILContext il, Func<float> procCoefficient)
     {
         var cursor = new ILCursor(il);
-        var foundConstant = cursor.TryGotoNext(
-            instruction => instruction.MatchLdcR4(out _),
-            instruction => instruction.MatchStfld<TAttack>(ProcCoefficientField));
+        var foundConstant = cursor.TryGotoNext(instruction => instruction.MatchLdcR4(out _), instruction => instruction.MatchStfld<TAttack>(ProcCoefficientField));
 
         if (!foundConstant)
         {
