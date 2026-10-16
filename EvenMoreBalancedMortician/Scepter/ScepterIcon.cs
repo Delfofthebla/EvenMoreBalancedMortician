@@ -4,7 +4,7 @@ namespace EvenMoreBalancedMortician.Scepter;
 
 internal static class ScepterIcon
 {
-    private const float ScepterPurpleHue = 0.75f;
+    private static readonly float ScepterPurpleHue = 0.75f;
 
     public static Sprite TintedCopyOf(Sprite source)
     {

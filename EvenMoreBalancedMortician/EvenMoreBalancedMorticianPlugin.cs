@@ -11,23 +11,23 @@ using R2API.Utils;
 
 namespace EvenMoreBalancedMortician;
 
-[BepInPlugin(Guid, Name, Version)]
+[BepInPlugin(GUID, NAME, VERSION)]
 [BepInDependency(MorrisPlugin.MODUID)]
-[BepInDependency(AncientScepterCompat.Guid, BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency(AncientScepterCompat.GUID, BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(R2APIContentManager.PluginGUID, BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(LanguageAPI.PluginGUID)]
 [BepInDependency(DeployableAPI.PluginGUID)]
 [BepInDependency(NetworkingAPI.PluginGUID)]
-[BepInDependency(RiskOfOptionsMenu.Guid, BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency(RiskOfOptionsMenu.GUID, BepInDependency.DependencyFlags.SoftDependency)]
 [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-[BepInIncompatibility(BalancedMorticianGuid)]
+[BepInIncompatibility(BALANCED_MORTICIAN_GUID)]
 public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
 {
-    public const string Guid = "com.Delfofthebla.EvenMoreBalancedMortician";
-    public const string Name = "EvenMoreBalancedMortician";
-    public const string Version = "1.4.0";
+    public const string GUID = "com.Delfofthebla.EvenMoreBalancedMortician";
+    public const string NAME = "EvenMoreBalancedMortician";
+    public const string VERSION = "1.5.0";
 
-    private const string BalancedMorticianGuid = "com.Bloonjitsu7.BalancedMortician";
+    private const string BALANCED_MORTICIAN_GUID = "com.Bloonjitsu7.BalancedMortician";
 
     internal static ManualLogSource Log { get; private set; }
 
@@ -38,6 +38,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         Log = Logger;
         _settings = new MorticianSettings(Config);
 
+        DyingGhoul.Install();
         ShovelDamageSourcePatch.Install(_settings.ShovelCountsAsPrimarySkill);
         GhoulEquipmentPatch.Install();
         GhoulAspectPatch.Install(_settings.GhoulAspectInheritChance);
@@ -48,7 +49,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
         TombstoneDurationPatch.Install(_settings.TombstoneDuration);
         TombstoneLimitPatch.Install(_settings.LysateCellAddsTombstone);
         TombstoneSoulPatch.Install(_settings.TombstoneSoulRecipient);
-        MinionOwnerPatch.Install();
+        GhoulRaiseCooldownPatch.Install(_settings.GhoulRaisingUsesCooldownReduction);
         InstallAncientScepterSupport();
 
         ApplySettings();
@@ -64,7 +65,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
             return;
 
         RestlessGraveSkill.Register(_settings.RestlessGraveEnabled);
-        RestlessGrave.Install(_settings.RestlessGraveRadius, _settings.RestlessGraveCooldown, _settings.RestlessGraveRisenGhoulLimit, _settings.ShowRaiseRadius);
+        RestlessGrave.Install(_settings.RestlessGraveRadius, _settings.RestlessGraveRisenGhoulLimit, _settings.ShowRaiseRadius);
     }
 
     private void ApplySettings()

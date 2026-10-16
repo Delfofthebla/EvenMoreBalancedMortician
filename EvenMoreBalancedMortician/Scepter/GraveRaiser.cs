@@ -13,7 +13,7 @@ internal sealed class GraveRaiser : MonoBehaviour
 
     private TombstoneController _tombstone;
     private CharacterBody _tombstoneBody;
-    private Run.FixedTimeStamp _readyAt = Run.FixedTimeStamp.negativeInfinity;
+    private GenericSkill _raiseCooldown;
 
     private TeamIndex Team => _tombstoneBody.teamComponent.teamIndex;
     private CharacterBody Owner => MinionOwner.BodyOf(_tombstoneBody);
@@ -22,6 +22,7 @@ internal sealed class GraveRaiser : MonoBehaviour
     {
         _tombstone = GetComponent<TombstoneController>();
         _tombstoneBody = GetComponent<CharacterBody>();
+        _raiseCooldown = TombstoneRaiseSkills.GhoulRaiseSlotOf(_tombstoneBody);
     }
 
     private void OnEnable() => InstanceTracker.Add(this);
@@ -30,7 +31,7 @@ internal sealed class GraveRaiser : MonoBehaviour
 
     public bool CanRaise(TeamIndex victimTeam, int risenGhoulLimit)
     {
-        if (!_readyAt.hasPassed || victimTeam == Team || victimTeam == TeamIndex.Neutral)
+        if (!_raiseCooldown || _raiseCooldown.stock <= 0 || victimTeam == Team || victimTeam == TeamIndex.Neutral)
             return false;
 
         if (!RestlessGraveSkill.IsEquippedBy(Owner))
@@ -40,9 +41,9 @@ internal sealed class GraveRaiser : MonoBehaviour
         return risenGhoulLimit <= 0 || _risenGhouls.Count < risenGhoulLimit;
     }
 
-    public void Raise(Vector3 corpsePosition, float cooldown)
+    public void Raise(Vector3 corpsePosition)
     {
-        _readyAt = Run.FixedTimeStamp.now + cooldown;
+        _raiseCooldown.DeductStock(1);
 
         var summon = new MasterSummon
         {
@@ -55,7 +56,10 @@ internal sealed class GraveRaiser : MonoBehaviour
         };
 
         var ghoul = summon.Perform();
-        var ghoulBody = ghoul ? ghoul.GetBody() : null;
+        var ghoulBody = ghoul
+            ? ghoul.GetBody()
+            : null;
+
         if (ghoulBody)
             _risenGhouls.Add(ghoulBody);
     }
@@ -67,7 +71,9 @@ internal sealed class GraveRaiser : MonoBehaviour
             return position;
 
         var node = nodeGraph.FindClosestNodeWithFlagConditions(position, HullClassification.Human, NodeFlags.None, NodeFlags.NoCharacterSpawn, false);
-        return nodeGraph.GetNodePosition(node, out var groundPosition) ? groundPosition : position;
+        return nodeGraph.GetNodePosition(node, out var groundPosition)
+            ? groundPosition
+            : position;
     }
 
     private static bool IsGone(CharacterBody ghoul) => !ghoul || !ghoul.healthComponent.alive;

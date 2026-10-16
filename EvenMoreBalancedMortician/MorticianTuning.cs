@@ -52,13 +52,32 @@ internal static class MorticianTuning
     {
         TombstoneController.soulOrbDamage = AsCoefficient(settings.SoulOrbDamagePercent);
         TombstoneController.spawnTime = settings.TombstoneGhoulSpawnInterval.Value;
+        SetRaiseCooldowns(settings);
 
         ApplyToBodies("Tombstone", MorrisPlugin.TombstoneBodyPrefab, MorrisPlugin.TombstoneBodyIndex, body => ApplyDamageStats(body, settings.TombstoneBaseDamage, settings.TombstoneDamagePerLevel));
     }
 
+    private static void SetRaiseCooldowns(MorticianSettings settings)
+    {
+        if (!TombstoneRaiseSkills.GhoulSpawn)
+            return;
+
+        TombstoneRaiseSkills.GhoulSpawn.baseRechargeInterval = settings.TombstoneGhoulSpawnInterval.Value;
+        TombstoneRaiseSkills.GhoulRaise.baseRechargeInterval = settings.RestlessGraveCooldown.Value;
+
+        foreach (var tombstone in LiveBodies.Of(MorrisPlugin.TombstoneBodyIndex))
+        {
+            foreach (var skill in tombstone.skillLocator.allSkills)
+                skill.RecalculateValues();
+        }
+    }
+
     private static void ApplyCooldowns(MorticianSettings settings)
     {
-        var skills = MorrisPlugin.MorrisBodyPrefab ? MorrisPlugin.MorrisBodyPrefab.GetComponent<SkillLocator>() : null;
+        var skills = MorrisPlugin.MorrisBodyPrefab
+            ? MorrisPlugin.MorrisBodyPrefab.GetComponent<SkillLocator>()
+            : null;
+
         if (!skills)
         {
             EvenMoreBalancedMorticianPlugin.Log.LogError("Mortician skill locator not found; cooldowns were not applied.");
@@ -91,7 +110,10 @@ internal static class MorticianTuning
 
     private static void ApplySpitProcCoefficient(MorticianSettings settings)
     {
-        var spitProjectile = BileSpit.spitPrefab ? BileSpit.spitPrefab.GetComponent<ProjectileController>() : null;
+        var spitProjectile = BileSpit.spitPrefab
+            ? BileSpit.spitPrefab.GetComponent<ProjectileController>()
+            : null;
+
         if (!spitProjectile)
         {
             EvenMoreBalancedMorticianPlugin.Log.LogError("Ghoul spit projectile not found; its proc coefficient was not applied.");
@@ -130,7 +152,10 @@ internal static class MorticianTuning
 
     private static void ApplyToBodies(string bodyName, GameObject bodyPrefab, BodyIndex bodyIndex, Action<CharacterBody> applyStats)
     {
-        var prefabBody = bodyPrefab ? bodyPrefab.GetComponent<CharacterBody>() : null;
+        var prefabBody = bodyPrefab
+            ? bodyPrefab.GetComponent<CharacterBody>()
+            : null;
+
         if (!prefabBody)
         {
             EvenMoreBalancedMorticianPlugin.Log.LogError($"{bodyName} body prefab not found; its stats were not applied.");

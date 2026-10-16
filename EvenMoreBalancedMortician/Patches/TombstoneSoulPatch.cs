@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using EvenMoreBalancedMortician.Presets;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
-using RoR2;
 using UnityEngine;
 
 namespace EvenMoreBalancedMortician.Patches;
@@ -18,7 +15,7 @@ internal static class TombstoneSoulPatch
 
     private static Hook _tombstoneStartHook;
     private static Hook _tombstoneDestroyHook;
-    private static ILHook _ghoulDeathHook;
+    private static Hook _soulDeliveryHook;
     private static PresetSetting<SoulRecipient> _soulRecipient;
 
     public static void Install(PresetSetting<SoulRecipient> soulRecipient)
@@ -27,13 +24,10 @@ internal static class TombstoneSoulPatch
 
         _tombstoneStartHook = HookTombstone(MorticianMethods.TombstoneStart, TrackTombstone);
         _tombstoneDestroyHook = HookTombstone(typeof(TombstoneController).GetMethod(nameof(TombstoneController.OnDestroy)), HandOverActiveTombstone);
-
-        var ghoulDeath = typeof(MorrisMinionController).GetMethod(nameof(MorrisMinionController.OnDeathStart));
-        _ghoulDeathHook = new ILHook(ghoulDeath, DeliverSoulsBySetting);
+        _soulDeliveryHook = HookTombstone(typeof(TombstoneController).GetMethod(nameof(TombstoneController.AddSoulStockServer)), DeliverSoulBySetting);
     }
 
-    private static Hook HookTombstone(MethodInfo method, Action<Action<TombstoneController>, TombstoneController> hook)
-        => new(method, hook);
+    private static Hook HookTombstone(MethodInfo method, Action<Action<TombstoneController>, TombstoneController> hook) => new(method, hook);
 
     private static void TrackTombstone(Action<TombstoneController> orig, TombstoneController self)
     {
@@ -56,59 +50,28 @@ internal static class TombstoneSoulPatch
             ownerLocator.SetActiveTombstone(newestRemaining);
     }
 
-    public static void HandOverTombstones(CharacterMaster owner, TombstoneLocator ownerLocator)
+    private static void DeliverSoulBySetting(Action<TombstoneController> orig, TombstoneController activeTombstone)
     {
-        var ownedTombstones = _liveTombstones.Where(tombstone => MinionOwner.MasterOf(tombstone.characterBody) == owner).ToList();
-        if (ownedTombstones.Count == 0)
-            return;
-
-        foreach (var tombstone in ownedTombstones)
-            tombstone.ownerLocator = ownerLocator;
-
-        ownerLocator.SetActiveTombstone(ownedTombstones.Last());
-    }
-
-    private static void DeliverSoulsBySetting(ILContext il)
-    {
-        var cursor = new ILCursor(il);
-        var foundSoulDelivery = cursor.TryGotoNext(
-            instruction => instruction.MatchCallvirt<TombstoneController>(nameof(TombstoneController.AddSoulStockServer)));
-
-        if (!foundSoulDelivery)
+        var ghoul = DyingGhoul.Current;
+        if (!ghoul)
         {
-            EvenMoreBalancedMorticianPlugin.Log.LogError("Could not find where a slain ghoul gives its soul to a tombstone; the Soul Recipient setting will not work.");
+            orig(activeTombstone);
             return;
         }
 
-        cursor.Remove();
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate<Action<TombstoneController, MorrisMinionController>>(DeliverSoul);
+        foreach (var recipient in SoulRecipients(activeTombstone, ghoul.transform.position))
+            orig(recipient);
     }
 
-    private static void DeliverSoul(TombstoneController activeTombstone, MorrisMinionController ghoul)
+    private static IEnumerable<TombstoneController> SoulRecipients(TombstoneController activeTombstone, Vector3 ghoulPosition) => _soulRecipient.Value switch
     {
-        switch (_soulRecipient.Value)
-        {
-            case SoulRecipient.Nearest:
-                NearestTombstone(activeTombstone, ghoul.transform.position).AddSoulStockServer();
-                break;
-
-            case SoulRecipient.Every:
-                foreach (var tombstone in TombstonesSharingOwner(activeTombstone))
-                    tombstone.AddSoulStockServer();
-                break;
-
-            case SoulRecipient.Newest:
-            default:
-                activeTombstone.AddSoulStockServer();
-                break;
-        }
-    }
+        SoulRecipient.Nearest => [NearestTombstone(activeTombstone, ghoulPosition)],
+        SoulRecipient.Every => TombstonesSharingOwner(activeTombstone),
+        _ => [activeTombstone],
+    };
 
     private static TombstoneController NearestTombstone(TombstoneController activeTombstone, Vector3 position)
-        => TombstonesSharingOwner(activeTombstone)
-            .OrderBy(tombstone => (tombstone.transform.position - position).sqrMagnitude)
-            .First();
+        => TombstonesSharingOwner(activeTombstone).OrderBy(tombstone => (tombstone.transform.position - position).sqrMagnitude).First();
 
     private static IEnumerable<TombstoneController> TombstonesSharingOwner(TombstoneController activeTombstone)
         => _liveTombstones.Where(tombstone => tombstone.ownerLocator == activeTombstone.ownerLocator);

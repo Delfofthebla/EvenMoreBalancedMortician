@@ -3,17 +3,12 @@ using UnityEngine.Networking;
 
 namespace EvenMoreBalancedMortician.Networking;
 
-internal sealed class HostSettingsMessage : INetMessage
+internal sealed class HostSettingsMessage(string[] hostValues) : INetMessage
 {
-    private string[] _hostValues = [];
+    private string[] _hostValues = hostValues;
 
-    public HostSettingsMessage()
+    public HostSettingsMessage() : this([])
     {
-    }
-
-    public HostSettingsMessage(string[] hostValues)
-    {
-        _hostValues = hostValues;
     }
 
     public void Serialize(NetworkWriter writer)

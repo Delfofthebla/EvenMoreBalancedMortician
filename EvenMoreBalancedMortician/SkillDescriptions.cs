@@ -7,7 +7,7 @@ namespace EvenMoreBalancedMortician;
 
 internal static class SkillDescriptions
 {
-    private const string TokenPrefix = "BOG_MORRIS_BODY_";
+    private static readonly string TokenPrefix = "BOG_MORRIS_BODY_";
 
     private static LanguageAPI.LanguageOverlay _overlay;
 
@@ -21,18 +21,14 @@ internal static class SkillDescriptions
     {
         [TokenPrefix + "PASSIVE_DESCRIPTION"] = PassiveDescription(settings.GhoulOnKillTriggerChance.Value, settings.SacrificeGuaranteesOnKill.Value),
 
-        [TokenPrefix + "PRIMARY_SHOVEL_DESCRIPTION"] =
-            $"Swing your shovel for {Damage(settings.ShovelDamagePercent.Value)}. " +
-            $"Hit ghouls and tombstones to <style=cIsUtility>launch</style> them for {Damage(settings.LaunchDamagePercent.Value)}.",
+        [TokenPrefix + "PRIMARY_SHOVEL_DESCRIPTION"] = $"Swing your shovel for {Damage(settings.ShovelDamagePercent.Value)}. "
+            + $"Hit ghouls and tombstones to <style=cIsUtility>launch</style> them for {Damage(settings.LaunchDamagePercent.Value)}.",
 
-        [TokenPrefix + "SECONDARY_GHOUL_DESCRIPTION"] =
-            "<style=cIsUtility>Soulbound</style>. Spawn a ghoul on the ground in front of you. " +
-            $"Ghouls bite for {Damage(settings.GhoulBiteDamagePercent.Value)}, " +
-            $"and spit <style=cIsDamage>Blighted</style> bile for {Damage(settings.GhoulSpitDamagePercent.Value)}.",
+        [TokenPrefix + "SECONDARY_GHOUL_DESCRIPTION"] = "<style=cIsUtility>Soulbound</style>. Spawn a ghoul on the ground in front of you. "
+            + $"Ghouls bite for {Damage(settings.GhoulBiteDamagePercent.Value)}, and spit <style=cIsDamage>Blighted</style> bile for {Damage(settings.GhoulSpitDamagePercent.Value)}.",
 
-        [TokenPrefix + "UTILITY_LANTERN_DESCRIPTION"] =
-            $"<style=cIsHealth>Detonate</style> the target ghoul for {Damage(settings.SacrificeDamagePercent.Value)}, " +
-            $"and <style=cIsHealing>heal {Number(settings.SacrificeHealPercent.Value)}% of your maximum health</style>.",
+        [TokenPrefix + "UTILITY_LANTERN_DESCRIPTION"] = $"<style=cIsHealth>Detonate</style> the target ghoul for {Damage(settings.SacrificeDamagePercent.Value)}, "
+            + $"and <style=cIsHealing>heal {Number(settings.SacrificeHealPercent.Value)}% of your maximum health</style>.",
 
         [TokenPrefix + "SPECIAL_TOMBSTONE_DESCRIPTION"] = TombstoneDescription(settings),
 
@@ -45,20 +41,21 @@ internal static class SkillDescriptions
         >= 100f => "Ghouls <style=cIsUtility>activate your On-Kill effects</style> when they die.",
         <= 0f when sacrificeGuaranteesTrigger => "<style=cIsHealth>Sacrificed</style> ghouls <style=cIsUtility>activate your On-Kill effects</style>.",
         <= 0f => "Ghouls do not activate your On-Kill effects.",
-        _ => $"Ghouls have a <style=cIsUtility>{Number(triggerChancePercent)}% chance</style> to <style=cIsUtility>activate your On-Kill effects</style> when they die." +
-             (sacrificeGuaranteesTrigger ? " <style=cIsHealth>Sacrificed</style> ghouls always do." : ""),
+        _ => $"Ghouls have a <style=cIsUtility>{Number(triggerChancePercent)}% chance</style> to <style=cIsUtility>activate your On-Kill effects</style> when they die."
+            + (sacrificeGuaranteesTrigger ? " <style=cIsHealth>Sacrificed</style> ghouls always do." : ""),
     };
 
-    private static string TombstoneDescription(MorticianSettings settings) =>
-        $"Erect a tombstone{DescribeDuration(settings.TombstoneDuration.Value)} that spawns a ghoul every <style=cIsUtility>{Number(settings.TombstoneGhoulSpawnInterval.Value)} seconds</style>. " +
-        "Whenever a ghoul is slain, the tombstone generates an <style=cIsDamage>explosive</style> <style=cIsUtility>vengeful soul</style> " +
-        $"which it will fire at a nearby enemy for {Damage(settings.SoulOrbDamagePercent.Value)}.";
+    private static string TombstoneDescription(MorticianSettings settings)
+        => $"Erect a tombstone{DescribeDuration(settings.TombstoneDuration.Value)} that spawns a ghoul every <style=cIsUtility>{Number(settings.TombstoneGhoulSpawnInterval.Value)} seconds</style>. "
+            + "Whenever a ghoul is slain, "
+            + "the tombstone generates an <style=cIsDamage>explosive</style> <style=cIsUtility>vengeful soul</style> which it will fire at a nearby enemy for "
+            + $"{Damage(settings.SoulOrbDamagePercent.Value)}.";
 
-    private static string RestlessGraveDescription(MorticianSettings settings) =>
-        $"\n<color=#d299ff>SCEPTER: Enemies slain within {Number(settings.RestlessGraveRadius.Value)}m of a tombstone rise as ghouls, " +
-        $"at most once every {Number(settings.RestlessGraveCooldown.Value)} seconds per tombstone." +
-        DescribeRisenGhoulLimit(settings.RestlessGraveRisenGhoulLimit.Value) +
-        "</color>";
+    private static string RestlessGraveDescription(MorticianSettings settings)
+        => $"\n<color=#d299ff>SCEPTER: Enemies slain within {Number(settings.RestlessGraveRadius.Value)}m of a tombstone rise as ghouls, "
+            + $"at most once every {Number(settings.RestlessGraveCooldown.Value)} seconds per tombstone."
+            + DescribeRisenGhoulLimit(settings.RestlessGraveRisenGhoulLimit.Value)
+            + "</color>";
 
     private static string DescribeRisenGhoulLimit(int limit) => limit > 0
         ? $" Each tombstone keeps up to {limit} risen ghouls."

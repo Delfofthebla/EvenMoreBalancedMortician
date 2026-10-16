@@ -9,10 +9,10 @@ namespace EvenMoreBalancedMortician.Scepter;
 
 internal static class RestlessGraveSkill
 {
-    private const string SkillName = "DELFOFTHEBLA_MORTICIAN_SPECIAL_RESTLESS_GRAVE";
+    private static readonly string SkillName = "DELFOFTHEBLA_MORTICIAN_SPECIAL_RESTLESS_GRAVE";
 
-    public const string NameToken = SkillName + "_NAME";
-    public const string DescriptionToken = SkillName + "_DESCRIPTION";
+    public static readonly string NameToken = SkillName + "_NAME";
+    public static readonly string DescriptionToken = SkillName + "_DESCRIPTION";
 
     private static PresetSetting<bool> _enabled;
 
@@ -23,7 +23,10 @@ internal static class RestlessGraveSkill
         _enabled = enabled;
 
         var bodyPrefab = MorrisPlugin.MorrisBodyPrefab;
-        var skills = bodyPrefab ? bodyPrefab.GetComponent<SkillLocator>() : null;
+        var skills = bodyPrefab
+            ? bodyPrefab.GetComponent<SkillLocator>()
+            : null;
+
         if (!skills)
         {
             EvenMoreBalancedMorticianPlugin.Log.LogError("Mortician skill locator not found; the Ancient Scepter will not upgrade Tombstone.");
@@ -58,8 +61,7 @@ internal static class RestlessGraveSkill
         }
     }
 
-    public static bool IsEquippedBy(CharacterBody body)
-        => Definition && body && body.skillLocator && body.skillLocator.special && body.skillLocator.special.skillDef == Definition;
+    public static bool IsEquippedBy(CharacterBody body) => Definition && body && body.skillLocator && body.skillLocator.special && body.skillLocator.special.skillDef == Definition;
 
     private static bool IsWithheldFrom(CharacterBody body) => !_enabled.Value && body.bodyIndex == MorrisPlugin.MorrisBodyIndex;
 }

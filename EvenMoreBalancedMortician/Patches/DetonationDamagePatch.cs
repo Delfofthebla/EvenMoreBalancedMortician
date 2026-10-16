@@ -1,8 +1,5 @@
 using System;
-using EntityStates;
 using EvenMoreBalancedMortician.Presets;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using RoR2;
 using SkillStates.Ghoul;
@@ -11,43 +8,39 @@ namespace EvenMoreBalancedMortician.Patches;
 
 internal static class DetonationDamagePatch
 {
-    private static ILHook _explodeHook;
+    private static Hook _explodeHook;
     private static PresetSetting<bool> _scalesWithMortician;
 
     public static void Install(PresetSetting<bool> scalesWithMortician)
     {
         _scalesWithMortician = scalesWithMortician;
-        _explodeHook = new ILHook(typeof(GhoulDeath).GetMethod(nameof(GhoulDeath.Explode)), ScaleWithSacrificerDamage);
+        _explodeHook = new Hook(typeof(GhoulDeath).GetMethod(nameof(GhoulDeath.Explode)), ExplodeWithDetonationDamageStat);
     }
 
-    private static void ScaleWithSacrificerDamage(ILContext il)
+    private static void ExplodeWithDetonationDamageStat(Action<GhoulDeath> orig, GhoulDeath self)
     {
-        var cursor = new ILCursor(il);
-        var foundDamageStat = cursor.TryGotoNext(
-            instruction => instruction.MatchLdfld<BaseState>(nameof(BaseState.damageStat)),
-            instruction => instruction.MatchMul(),
-            instruction => instruction.MatchStfld<BlastAttack>(nameof(BlastAttack.baseDamage)));
-
-        if (!foundDamageStat)
+        if (!_scalesWithMortician.Value)
         {
-            EvenMoreBalancedMorticianPlugin.Log.LogError("Could not find the Sacrifice explosion's damage; it keeps scaling with the ghoul's damage stat.");
+            orig(self);
             return;
         }
 
-        cursor.Index++;
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(DetonationDamageStat);
+        var ghoulDamageStat = self.damageStat;
+        self.damageStat = DetonationDamageStat(self);
+
+        orig(self);
+
+        self.damageStat = ghoulDamageStat;
     }
 
-    private static float DetonationDamageStat(float ghoulDamageStat, GhoulDeath ghoulDeath)
+    private static float DetonationDamageStat(GhoulDeath ghoulDeath)
     {
-        if (!_scalesWithMortician.Value)
-            return ghoulDamageStat;
-
         var minion = ghoulDeath.minionController;
         var sacrificer = minion.sacrificeOwner ? minion.sacrificeOwner : minion.owner;
-        var sacrificerBody = sacrificer ? sacrificer.GetComponent<CharacterBody>() : null;
+        var sacrificerBody = sacrificer
+            ? sacrificer.GetComponent<CharacterBody>()
+            : null;
 
-        return sacrificerBody ? sacrificerBody.damage : ghoulDamageStat;
+        return sacrificerBody ? sacrificerBody.damage : ghoulDeath.damageStat;
     }
 }
