@@ -1,17 +1,16 @@
 using System;
 using EvenMoreBalancedMortician.Presets;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
 using RoR2;
+using UnityEngine.Networking;
 
 namespace EvenMoreBalancedMortician.Patches;
 
 internal static class GhoulRaiseCooldownPatch
 {
     private static Hook _tombstoneStartHook;
-    private static ILHook _tombstoneUpdateHook;
+    private static Hook _tombstoneUpdateHook;
     private static PresetSetting<bool> _usesCooldownReduction;
 
     public static void Install(PresetSetting<bool> usesCooldownReduction)
@@ -21,13 +20,14 @@ internal static class GhoulRaiseCooldownPatch
         if (!TombstoneRaiseSkills.Register())
             return;
 
-        _tombstoneStartHook = new Hook(MorticianMethods.TombstoneStart, FollowTombstoneStats);
-        _tombstoneUpdateHook = new ILHook(MorticianMethods.TombstoneFixedUpdate, SpawnGhoulsFromSkillStock);
+        _tombstoneStartHook = new Hook(MorticianMethods.TombstoneStart, SwitchToSkillStockSpawning);
+        _tombstoneUpdateHook = new Hook(MorticianMethods.TombstoneFixedUpdate, SpawnGhoulsFromSkillStock);
     }
 
-    private static void FollowTombstoneStats(Action<TombstoneController> orig, TombstoneController self)
+    private static void SwitchToSkillStockSpawning(Action<TombstoneController> orig, TombstoneController self)
     {
         orig(self);
+        DisableMorticianSpawnTimer(self);
 
         self.characterBody.onRecalculateStats += ApplyCooldownReductionSetting;
         self.characterBody.MarkAllStatsDirty();
@@ -50,27 +50,16 @@ internal static class GhoulRaiseCooldownPatch
         ghoulRaise.flatCooldownReduction = ghoulSpawn.flatCooldownReduction;
     }
 
-    private static void SpawnGhoulsFromSkillStock(ILContext il)
+    private static void SpawnGhoulsFromSkillStock(Action<TombstoneController> orig, TombstoneController self)
     {
-        var cursor = new ILCursor(il);
-        ILLabel skipSpawn = null;
-        var foundSpawnTimer = cursor.TryGotoNext(
-            instruction => instruction.MatchLdarg(0),
-            instruction => instruction.MatchLdfld<TombstoneController>(nameof(TombstoneController.spawnStopwatch)),
-            instruction => instruction.MatchLdsfld<TombstoneController>(nameof(TombstoneController.spawnTime)),
-            instruction => instruction.MatchBltUn(out skipSpawn));
+        orig(self);
 
-        if (!foundSpawnTimer)
-        {
-            EvenMoreBalancedMorticianPlugin.Log.LogError("Could not find the tombstone's ghoul spawn timer; cooldown reduction will not speed up its ghoul spawns.");
-            return;
-        }
-
-        cursor.Index++;
-        cursor.RemoveRange(3);
-        cursor.EmitDelegate(TryConsumeGhoulSpawn);
-        cursor.Emit(OpCodes.Brfalse, skipSpawn);
+        if (NetworkServer.active && self.nodeGraph && TryConsumeGhoulSpawn(self))
+            self.SpawnGhoulAtClosestNode();
     }
+
+    // Mortician's FixedUpdate adds to spawnStopwatch and spawns a ghoul once it reaches spawnTime; from negative infinity it never does.
+    private static void DisableMorticianSpawnTimer(TombstoneController tombstone) => tombstone.spawnStopwatch = float.NegativeInfinity;
 
     private static bool TryConsumeGhoulSpawn(TombstoneController tombstone) => TombstoneRaiseSkills.TryConsume(TombstoneRaiseSkills.GhoulSpawnSlotOf(tombstone.characterBody));
 }

@@ -1,9 +1,27 @@
+#### 1.5.0
+
+Updated for the Hallowed Concepts update. Requires Mortician v0.1.6.
+
+**Added**
+- New Config Setting "Ghoul Raising Uses Cooldown Reduction" (Tombstone): the cooldown reduction items the tombstone copies from you when placed speed up its ghoul spawns and Restless Grave's raise cooldown. On in every preset.
+
+**Removed**
+- This mod's fix for ghoul and tombstone ownership after a revive or death. Mortician 0.1.6 fixes both in the base mod.
+
+**Changed** (EvenMoreBalancedMortician preset)
+- Tombstone duration removed. (I decided that I hated this)
+
+**Fixed**
+- The assembly version is now properly written to the mod's DLL. (I screwed up and it was not properly being set, which could cause the game to think everyone was on the same version even though they weren't. Likely not a big issue for most people, but it could have been)
+
+Players on 1.4.0 cannot join a lobby hosted on 1.5.0, or the reverse.
+
 #### 1.4.0
 
 **Added**
 - New Config Setting "Guarantees On-Kill Trigger" (Sacrifice): a sacrificed ghoul always triggers your on-kill items, skipping the On-Kill Trigger Chance roll. On in every preset. The passive's tooltip mentions it while the chance is below 100%.
 
-Players on 1.3.0 cannot join a lobby hosted on 1.4.0, or the reverse.
+~~Players on 1.3.0 cannot join a lobby hosted on 1.4.0, or the reverse.~~ (He lied, lyingly)
 
 #### 1.3.0
 
@@ -51,7 +69,7 @@ Walked back a bunch of my prior nerfs in the preset after some more play with hi
 **Fixed**
 - 1.1.0 reported itself as 1.0.0, so players on those two versions were not kept out of each other's lobbies. Unlikely to have happened to anyone but has been fixed regardless.
 
-Players on 1.1.0 or earlier cannot join a lobby hosted on 1.2.0, or the reverse, they'll need to update.
+~~Players on 1.1.0 or earlier cannot join a lobby hosted on 1.2.0, or the reverse, they'll need to update.~~ (He lied, lyingly)
 
 #### 1.1.0
 
@@ -70,7 +88,7 @@ Players on 1.1.0 or earlier cannot join a lobby hosted on 1.2.0, or the reverse,
 - Detonation Damage: 600% → 880%
 - Tombstone Duration: 23 → 30
 
-Players on 1.0.0 cannot join a lobby hosted on 1.1.0, or the reverse.
+~~Players on 1.0.0 cannot join a lobby hosted on 1.1.0, or the reverse.~~ (He lied, lyingly)
 
 #### 1.0.0
 

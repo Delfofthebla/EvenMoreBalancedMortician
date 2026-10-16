@@ -1,6 +1,6 @@
 # Even More Balanced Mortician
 
-A rebalance of [Mortician](https://thunderstore.io/package/Bog/Mortician/), with a few new item interactions on top.
+A rebalance of [Mortician](https://thunderstore.io/package/Bog/Mortician/), with a few new item & mod interactions on top.
 
 I came back to Risk of Rain 2 after a long break and found the Mortician mod. It's pretty neat! But holy moly is he
 overpowered. I wanted to play him with friends without him steamrolling vanilla balance, so I made this mod. Expect
@@ -10,76 +10,83 @@ semi-frequent updates for a while as I playtest and tweak the numbers.
 disables itself if it finds it, so you'll need to remove one or the other. If you prefer Bloonjitsu7's numbers, they're
 included here as a preset.
 
-## What's different
+## Regarding any Future Bugs or Errors
 
-### The rebalance
+PLEASE post them to my github before you bring them to Bog when using this mod. I actively override much of Mortician's
+code and if you start having problems you should assume that it is _THIS MOD_ causing those issues not Mortician itself.
+I will need to update after every Mortician update, so the moment you see one stop using this until I can get a fix out.
+
+If a RoR2 patch/update/new dlc breaks things and you start running into issues, disable this mod first, verify the problem
+still occurs, and THEN you can report it to Bog. When in doubt, just dump your error on the issues page of my Github and
+I will take a look when I have time.
+
+## What's different
 
 ![Mortician's skills with this mod's numbers](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/MorticianAbilityList.png)
 
-Mortician's early-midgame damage mostly came from his primary that hit like a freight train, so that's where most of the
-nerf went. The swing drops from 800% to 340% damage, but now counts as primary skill damage, so items like Luminous Shot
-work with it. Flinging a ghoul or tombstone goes up a little, from 350% to 400%, which hits the breakpoint for items
-that need a 400% hit.
+### The Rebalance
 
-Ghouls got a big damage nerf (8 base damage instead of 12) and their spit's proc coefficient was dropped from 1.0 to 0.7.
-However sacrifice now scales with _your_ damage stat instead of the ghoul's. Ghouls don't carry your items, so the original
-explosion fell off hard late in a run, and the damage nerf would have made it even worse. Honestly it still falls off a bit,
-but at least you can _technically_ scale it. I've bumped it up to 800% of your damage over a slightly bigger radius, and
-anything that boosts your damage, (like Shaped Glass) boosts it too.
+#### **Base Stats**
+* Starting health dropped from 200 to 180
+* Health gain per level dropped from 66 to 54 (to match the 30% per level that every other survivor uses)
 
-Mortician's passive in the base mod was pretty nutty. Every single ghoul death, regardless of how it happened, counted as
-a on-kill proc. When you've got a ton of backup mags, an ancient scepter, and a lysate cell things got pretty insane.
-Even in the base mod the proc-chaining could get pretty crazy just by letting ghouls die. Regardless, now each ghoul death
-has a 50% chance to trigger your on-kill items instead (affected by Luck), but sacrificing a ghoul still guarantees it.
+#### **Shovel Strike**
+* Is now properly considered a primary skill (For Luminous Shot)
+* Swing damage dropped from 800% to 340%,
+* Launch damage increased from 350% to 400% (to hit the breakpoint for items that need a 400% hit to trigger)
 
-The tombstone crumbles after 30 seconds instead of sticking around forever, and its vengeful souls hit for 280% instead
-of 350%.
+#### **Ghouls**
+* Base damage lowered from 12 to 8
+* Spit proc coefficient dropped from 1.0 to 0.7
+* No longer blindly inherits your equipment slot* (See below for new elite aspect behavior)
 
-The tombstone's ghoul spawns, and the Restless Grave raise cooldown, now recharge like a special skill. The cooldown
-reduction items it copies from you when placed (Alien Head, Lysate Cell, Purity) speed them up. In the base mod, a
-tombstone raised a ghoul every 10 seconds no matter what you were holding.
+#### **Sacrifice**
+* Damage now calculated from Mortician instead of the ghoul. (For better scaling and to avoid the ghoul damage nerf)
+* Damage increased from 700% to 800%
+* Range increased from 18m to 20m
 
-Mortician himself is a touch less tanky, at 180 health instead of 200. Health gain per level was also reduced to match the
-30% per level that every other survivor uses, which will make him noticeably less tanky later on. He's still a slow melee
-survivor with no mobility, so I've kept his armor as is, but his health stats were way outside of normal survivor numbers
-in the base mod.
+#### **Soul Offering**
+* On-Kill effects trigger chance lowered from 100% to 50%. (Affected by luck)
 
-### Lysate Cell
+#### **Tombstone**
+* Vengeful Soul damage dropped from 350% to 280%
+* Raise timer for ghouls now affected by (global) cooldown reduction items
+* Now properly supports Lysate Cell, using the same mechanism as Engineer (+1 tombstone maximum)
+* Now supports Ancient Scepter* (See below for details)
+
+### New Mechanics / Interactions
+
+#### Elite aspects
+* Every spawned ghoul has a 33% chance to inherit an Elite aspect that you're carrying (affected by Luck).
+
+  This covers aspect equipment, and aspect items from [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/), which roll once per copy you hold. If you don't play with ZetAspects, you may want to increase this, but follow your gut.
+
+In the base mod, every ghoul copies whatever is in your equipment slot, regardless of the item. I _suspect_ that this was
+meant to propagate passives (like Elite Aspects), but it's hard to know for certain. The problem is that the default
+implementation worked on things like Fuel Array as well (lol) and they never activated the item so non-passives did nothing.
+BalancedMortician turned that off entirely, which was fair, but I liked ghouls turning elite too much to lose it entirely.
+
+#### Lysate Cell
 
 Despite how strong Mortician is, I was genuinely surprised to learn that Lysate Cell did not work on the tombstone at all.
 This felt like a power gap that I could fill rather than one to reign in. Engineer gets an extra turret from a Lysate Cell, 
 after all. So now Mortician gets an extra tombstone. With two up, a slain ghoul's vengeful soul goes to whichever tombstone
 is nearest to where it died.
 
-### Ancient Scepter
+#### Ancient Scepter
 
-With [Standalone Ancient Scepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed,
-the Scepter upgrades Tombstone into **Restless Grave**: enemies that die near one of your tombstones rise as ghouls,
-up to one every 3 seconds per tombstone.
+With [Standalone Ancient Scepter](https://thunderstore.io/package/amogus_lovers/StandaloneAncientScepter/) installed, the Scepter upgrades Tombstone into **Restless Grave**: enemies that
+die near one of your tombstones rise as ghouls, up to one every 3 seconds per tombstone. (Affected by cooldown reduction items)
 
 ![The Restless Grave Upgrade](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/RestlessGrave.png)
 
-A ring on the ground shows the raise radius. Each player can hide it with
-_Visuals → Show Raise Radius_, which only affects their own screen.
-
 The Scepter mod is not required. Without it, Tombstone works as usual.
-
-### Elite aspects
-
-In the base mod, every ghoul copies whatever is in your equipment slot, regardless of the item. I _suspect_ that this was
-meant to propogate passives like Elite Aspect Equipment, but it's hard to know for certain. The problem is that the default
-implementation worked on things like Fuel Array as well (lol). BalancedMortician turned that off entirely, which was fair,
-but I liked ghouls turning elite too much to lose it.
-
-Now each new ghoul has a 33% chance to inherit each aspect you're carrying (affected by Luck). That covers aspect equipment, and aspect items
-from mods like [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/), which roll once per copy you hold.
-Nothing else is ever copied. If you don't play with ZetAspects, you may want to increase this, but follow your gut.
 
 ## Don't like my numbers?
 
 Everything above is a setting, from base stats to cooldowns and proc coefficients, and you can change it in game with
-[Risk Of Options](https://thunderstore.io/c/riskofrain2/p/Rune580/Risk_Of_Options/) or in the config file. Each
-setting's description lists its value in every preset, and skill tooltips update to match.
+[Risk Of Options](https://thunderstore.io/c/riskofrain2/p/Rune580/Risk_Of_Options/) or in the config file. Each setting's description lists its value in every preset, and skill
+tooltips update to match.
 
 If you'd rather not tune things yourself, there are two other presets to fall back on:
 
@@ -96,10 +103,11 @@ preset's new values.
 
 ## Multiplayer
 
-The host's settings apply to everyone in the lobby, and your own config comes back whenever you host or play solo.
-Every player needs the same version of this mod.
+The host's config settings apply to everyone in the lobby, and your tooltips _should_ update to account for this, if your
+settings differ. Every player needs the same version of this mod.
 
 ## Credits
 
 Icon: [Tombstone](https://game-icons.net/1x1/lorc/tombstone.html) by Lorc,
 from [game-icons.net](https://game-icons.net), licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+The "Restless Grave" icon is just dynamically recolored during runtime with magic, so idk, credit to wizards or whatever.

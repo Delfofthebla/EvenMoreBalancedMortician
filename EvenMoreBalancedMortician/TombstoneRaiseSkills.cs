@@ -32,7 +32,7 @@ internal static class TombstoneRaiseSkills
         var ghoulSpawnSlot = AddHiddenSlot(bodyPrefab, "GhoulSpawn", GhoulSpawnName);
         var ghoulRaiseSlot = AddHiddenSlot(bodyPrefab, "GhoulRaise", GhoulRaiseName);
 
-        skills.special = ghoulSpawnSlot;
+        skills.primary = ghoulSpawnSlot;
         GhoulSpawn = ghoulSpawnSlot.skillFamily.defaultSkillDef;
         GhoulRaise = ghoulRaiseSlot.skillFamily.defaultSkillDef;
 

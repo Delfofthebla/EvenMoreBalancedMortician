@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using Morris.Components;
+using Morris.Content;
 using RoR2;
-using RoR2.Orbs;
 using SkillStates.Ghoul;
 using SkillStates.SharedStates;
 
@@ -12,10 +10,10 @@ namespace EvenMoreBalancedMortician.Patches;
 
 internal static class ProcCoefficientPatch
 {
-    private static readonly string ProcCoefficientField = "procCoefficient";
-
+    private static readonly ScopedValue<ClingState> _bitingGhoul = new();
+    private static readonly ScopedValue<GhoulDeath> _detonatingGhoul = new();
     private static readonly List<Hook> _hooks = [];
-    private static readonly List<ILHook> _ilHooks = [];
+
     private static MorticianSettings _settings;
 
     public static void Install(MorticianSettings settings)
@@ -24,10 +22,13 @@ internal static class ProcCoefficientPatch
 
         _hooks.Add(new Hook(typeof(GhoulMelee).GetMethod(nameof(GhoulMelee.OnEnter)), SetBiteProcCoefficient));
         _hooks.Add(new Hook(typeof(BaseLaunchedState).GetMethod(nameof(BaseLaunchedState.OnEnter)), SetLaunchProcCoefficient));
+        _hooks.Add(new Hook(typeof(TombstoneSoulOrb).GetMethod(nameof(TombstoneSoulOrb.Begin)), SetSoulOrbProcCoefficient));
 
-        _ilHooks.Add(new ILHook(typeof(ClingState).GetMethod(nameof(ClingState.Bite)), ReplaceClingBiteProcCoefficient));
-        _ilHooks.Add(new ILHook(typeof(GhoulDeath).GetMethod(nameof(GhoulDeath.Explode)), ReplaceDetonationProcCoefficient));
-        _ilHooks.Add(new ILHook(typeof(TombstoneController).GetMethod(nameof(TombstoneController.FireSoulOrb)), SetSoulOrbProcCoefficient));
+        _bitingGhoul.SetDuring(typeof(ClingState).GetMethod(nameof(ClingState.Bite)));
+        _hooks.Add(new Hook(typeof(HealthComponent).GetMethod(nameof(HealthComponent.TakeDamage)), SetClingBiteProcCoefficient));
+
+        _detonatingGhoul.SetDuring(typeof(GhoulDeath).GetMethod(nameof(GhoulDeath.Explode)));
+        _hooks.Add(new Hook(typeof(BlastAttack).GetMethod(nameof(BlastAttack.Fire)), SetDetonationProcCoefficient));
     }
 
     private static void SetBiteProcCoefficient(Action<GhoulMelee> orig, GhoulMelee self)
@@ -42,46 +43,27 @@ internal static class ProcCoefficientPatch
         self.attack.procCoefficient = _settings.LaunchProcCoefficient.Value;
     }
 
-    private static void ReplaceClingBiteProcCoefficient(ILContext il) => ReplaceProcCoefficientConstant<DamageInfo>(il, ClingBiteProcCoefficient);
-
-    private static void ReplaceDetonationProcCoefficient(ILContext il) => ReplaceProcCoefficientConstant<BlastAttack>(il, DetonationProcCoefficient);
-
-    private static void ReplaceProcCoefficientConstant<TAttack>(ILContext il, Func<float> procCoefficient)
+    private static void SetSoulOrbProcCoefficient(Action<TombstoneSoulOrb> orig, TombstoneSoulOrb self)
     {
-        var cursor = new ILCursor(il);
-        var foundConstant = cursor.TryGotoNext(instruction => instruction.MatchLdcR4(out _), instruction => instruction.MatchStfld<TAttack>(ProcCoefficientField));
-
-        if (!foundConstant)
-        {
-            EvenMoreBalancedMorticianPlugin.Log.LogError($"Could not find the proc coefficient in {il.Method.Name}; it keeps Mortician's value.");
-            return;
-        }
-
-        cursor.Remove();
-        cursor.EmitDelegate(procCoefficient);
+        self.procCoefficient = _settings.SoulOrbProcCoefficient.Value;
+        orig(self);
     }
 
-    private static void SetSoulOrbProcCoefficient(ILContext il)
+    private static void SetClingBiteProcCoefficient(Action<HealthComponent, DamageInfo> orig, HealthComponent self, DamageInfo damageInfo)
     {
-        var cursor = new ILCursor(il);
-        if (!cursor.TryGotoNext(instruction => instruction.MatchCallvirt<OrbManager>(nameof(OrbManager.AddOrb))))
-        {
-            EvenMoreBalancedMorticianPlugin.Log.LogError("Could not find where the tombstone fires its soul orb; it keeps Mortician's proc coefficient.");
-            return;
-        }
+        var bitingGhoul = _bitingGhoul.Current;
+        if (bitingGhoul != null && damageInfo.inflictor == bitingGhoul.gameObject)
+            damageInfo.procCoefficient = _settings.GhoulClingBiteProcCoefficient.Value;
 
-        cursor.EmitDelegate(WithSoulOrbProcCoefficient);
+        orig(self, damageInfo);
     }
 
-    private static Orb WithSoulOrbProcCoefficient(Orb soulOrb)
+    private static BlastAttack.Result SetDetonationProcCoefficient(Func<BlastAttack, BlastAttack.Result> orig, BlastAttack self)
     {
-        if (soulOrb is GenericDamageOrb damageOrb)
-            damageOrb.procCoefficient = _settings.SoulOrbProcCoefficient.Value;
+        var detonatingGhoul = _detonatingGhoul.Current;
+        if (detonatingGhoul != null && self == detonatingGhoul.attack)
+            self.procCoefficient = _settings.SacrificeProcCoefficient.Value;
 
-        return soulOrb;
+        return orig(self);
     }
-
-    private static float ClingBiteProcCoefficient() => _settings.GhoulClingBiteProcCoefficient.Value;
-
-    private static float DetonationProcCoefficient() => _settings.SacrificeProcCoefficient.Value;
 }

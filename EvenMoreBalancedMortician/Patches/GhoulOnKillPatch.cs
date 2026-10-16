@@ -1,6 +1,5 @@
+using System;
 using EvenMoreBalancedMortician.Presets;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
 using RoR2;
@@ -9,7 +8,7 @@ namespace EvenMoreBalancedMortician.Patches;
 
 internal static class GhoulOnKillPatch
 {
-    private static ILHook _ghoulDeathHook;
+    private static Hook _onKillTriggerHook;
     private static PresetSetting<float> _triggerChancePercent;
     private static PresetSetting<bool> _sacrificeGuaranteesTrigger;
 
@@ -18,31 +17,21 @@ internal static class GhoulOnKillPatch
         _triggerChancePercent = triggerChancePercent;
         _sacrificeGuaranteesTrigger = sacrificeGuaranteesTrigger;
 
-        var ghoulDeath = typeof(MorrisMinionController).GetMethod(nameof(MorrisMinionController.OnDeathStart));
-        _ghoulDeathHook = new ILHook(ghoulDeath, RollForOnKillTrigger);
+        _onKillTriggerHook = new Hook(typeof(GlobalEventManager).GetMethod(nameof(GlobalEventManager.TriggerCharacterDeathProc)), RollForGhoulOnKillTrigger);
     }
 
-    private static void RollForOnKillTrigger(ILContext il)
+    private static void RollForGhoulOnKillTrigger(Action<GlobalEventManager, DamageReport> orig, GlobalEventManager self, DamageReport death)
     {
-        var cursor = new ILCursor(il);
-        var foundOnKillTrigger = cursor.TryGotoNext(instruction => instruction.MatchCallvirt<GlobalEventManager>(nameof(GlobalEventManager.TriggerCharacterDeathProc)));
-
-        if (!foundOnKillTrigger)
-        {
-            EvenMoreBalancedMorticianPlugin.Log.LogError("Could not find where a dying ghoul triggers on-kill items; the On-Kill Trigger Chance setting will not work.");
+        var ghoul = DyingGhoul.Current;
+        if (IsOwnDeathProc(ghoul, death) && !PassesOnKillRoll(ghoul, death))
             return;
-        }
 
-        cursor.Remove();
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(TriggerOnKill);
+        orig(self, death);
     }
 
-    private static void TriggerOnKill(GlobalEventManager eventManager, DamageReport ghoulDeath, MorrisMinionController ghoul)
-    {
-        if (IsGuaranteed(ghoul) || Util.CheckRoll(_triggerChancePercent.Value, ghoulDeath.attackerMaster))
-            eventManager.TriggerCharacterDeathProc(ghoulDeath);
-    }
+    private static bool IsOwnDeathProc(MorrisMinionController ghoul, DamageReport death) => ghoul && death.victim == ghoul.healthComponent;
+
+    private static bool PassesOnKillRoll(MorrisMinionController ghoul, DamageReport death) => IsGuaranteed(ghoul) || Util.CheckRoll(_triggerChancePercent.Value, death.attackerMaster);
 
     private static bool IsGuaranteed(MorrisMinionController ghoul) => ghoul.sacrificed && _sacrificeGuaranteesTrigger.Value;
 }
