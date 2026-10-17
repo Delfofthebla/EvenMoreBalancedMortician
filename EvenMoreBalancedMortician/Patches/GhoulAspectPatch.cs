@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EvenMoreBalancedMortician.Presets;
 using MonoMod.RuntimeDetour;
 using Morris.Components;
@@ -15,6 +16,7 @@ internal static class GhoulAspectPatch
     private static readonly HashSet<string> _detectedAspects = [];
 
     private static Hook _minionStartHook;
+    private static Hook _minionDeathStartHook;
     private static PresetSetting<float> _inheritChancePercent;
 
     public static void Install(PresetSetting<float> inheritChancePercent)
@@ -22,6 +24,7 @@ internal static class GhoulAspectPatch
         _inheritChancePercent = inheritChancePercent;
 
         _minionStartHook = new Hook(MorticianMethods.MinionStart, InheritAspects);
+        _minionDeathStartHook = new Hook(MorticianMethods.MinionDeathStart, ShedAspectsBeforeOnKillProc);
     }
 
     private static void InheritAspects(Action<MorrisMinionController> orig, MorrisMinionController self)
@@ -77,13 +80,55 @@ internal static class GhoulAspectPatch
             ghoulInventory.GiveItemPermanent(aspect, inheritedStacks);
     }
 
+    // Mortician's on-kill proc names the dying ghoul as its victim, so an aspected ghoul would count as an elite kill and repeat its elite death effects.
+    private static void ShedAspectsBeforeOnKillProc(Action<MorrisMinionController> orig, MorrisMinionController self)
+    {
+        if (NetworkServer.active && self.minionType == MorrisMinionController.MorrisMinionType.Ghoul && self.characterBody)
+            ShedAspects(self.characterBody);
+
+        orig(self);
+    }
+
+    private static void ShedAspects(CharacterBody ghoul)
+    {
+        var eliteBuffs = BuffCatalog.eliteBuffIndices.Where(ghoul.HasBuff).ToArray();
+        if (eliteBuffs.Length == 0)
+            return;
+
+        if (ghoul.inventory)
+            RemoveAspects(ghoul.inventory);
+
+        foreach (var eliteBuff in eliteBuffs)
+        {
+            ghoul.ClearTimedBuffs(eliteBuff);
+            ghoul.SetBuffCount(eliteBuff, 0);
+        }
+
+        RefreshEliteStatus(ghoul);
+    }
+
+    private static void RemoveAspects(Inventory ghoulInventory)
+    {
+        if (IsAspectEquipment(ghoulInventory.currentEquipmentIndex))
+            ghoulInventory.SetEquipmentIndex(EquipmentIndex.None, ghoulInventory.activeEquipmentLocation);
+
+        foreach (var aspect in ghoulInventory.itemAcquisitionOrder.Where(IsAspectItem).ToArray())
+            ghoulInventory.ResetItemPermanent(aspect);
+    }
+
+    private static void RefreshEliteStatus(CharacterBody ghoul) => ghoul.RecalculateStats();
+
     private static bool IsAspectEquipment(EquipmentIndex equipment)
     {
         var equipmentDef = EquipmentCatalog.GetEquipmentDef(equipment);
         return equipmentDef && equipmentDef.passiveBuffDef && equipmentDef.passiveBuffDef.isElite;
     }
 
-    private static bool IsAspectItem(ItemIndex item) => ItemCatalog.GetItemDef(item).name.IndexOf(AspectNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
+    private static bool IsAspectItem(ItemIndex item)
+    {
+        var itemDef = ItemCatalog.GetItemDef(item);
+        return !itemDef.hidden && itemDef.name.IndexOf(AspectNameFragment, StringComparison.OrdinalIgnoreCase) >= 0;
+    }
 
     private static bool RollInheritChance(CharacterMaster owner) => Util.CheckRoll(_inheritChancePercent.Value, owner);
 

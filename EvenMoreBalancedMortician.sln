@@ -27,6 +27,7 @@ Global
 		{514D24DC-269A-4810-BFFD-E6653CD3F811}.Release|x64.Build.0 = Release|Any CPU
 		{514D24DC-269A-4810-BFFD-E6653CD3F811}.Release|x86.ActiveCfg = Release|Any CPU
 		{514D24DC-269A-4810-BFFD-E6653CD3F811}.Release|x86.Build.0 = Release|Any CPU
+		{514D24DC-269A-4810-BFFD-E6653CD3F811}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

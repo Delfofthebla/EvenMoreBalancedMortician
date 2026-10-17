@@ -1,6 +1,6 @@
 {
   "name": "Even_More_Balanced_Mortician",
-  "version_number": "1.5.0",
+  "version_number": "1.6.0",
   "website_url": "https://github.com/Delfofthebla/EvenMoreBalancedMortician",
   "description": "Configurable rebalance and extension of the Mortician survivor.",
   "dependencies": [
@@ -9,6 +9,7 @@
     "RiskofThunder-R2API_Deployable-1.0.1",
     "RiskofThunder-R2API_Language-1.1.0",
     "RiskofThunder-R2API_Networking-1.0.4",
+    "RiskofThunder-R2API_RecalculateStats-1.6.6",
     "Bog-Mortician-0.1.6"
   ]
 }

@@ -46,6 +46,7 @@ internal sealed class MorticianSettings
     public PresetSetting<float> LaunchProcCoefficient { get; }
 
     public PresetSetting<float> RaiseDeadCooldown { get; }
+    public PresetSetting<float> RaiseDeadMinimumCooldown { get; }
     public PresetSetting<int> GhoulLimit { get; }
     public PresetSetting<float> GhoulBaseHealth { get; }
     public PresetSetting<float> GhoulHealthPerLevel { get; }
@@ -53,6 +54,7 @@ internal sealed class MorticianSettings
     public PresetSetting<float> GhoulDamagePerLevel { get; }
     public PresetSetting<float> GhoulDegen { get; }
     public PresetSetting<float> GhoulDegenPerLevel { get; }
+    public PresetSetting<float> GhoulDegenGrowthPercent { get; }
     public PresetSetting<float> GhoulBiteDamagePercent { get; }
     public PresetSetting<float> GhoulBiteProcCoefficient { get; }
     public PresetSetting<float> GhoulClingBiteProcCoefficient { get; }
@@ -180,6 +182,14 @@ internal sealed class MorticianSettings
             "Cooldown",
             "Seconds Raise Dead takes to recharge one of its 2 charges. Cooldown reduction items still apply.",
             Presets(original: 7f, balancedMortician: 7f, evenMoreBalanced: 7f));
+        RaiseDeadMinimumCooldown = Bind(
+            SecondarySection,
+            "Minimum Cooldown",
+            "Time that Raise Dead's cooldown can never drop below, regardless of how much cooldown reduction you have (Brainstalks included).",
+            Presets(original: 0.5f, balancedMortician: 0.5f, evenMoreBalanced: 2f),
+            vanilla: "Every skill's cooldown bottoms out at 0.5 seconds.",
+            note: "If you decide to set a cap on ghouls, I recommend lowering this back down to 0.5",
+            acceptableValues: new AcceptableValueRange<float>(0.5f, 10f));
         GhoulLimit = Bind(
             SecondarySection,
             "Ghoul Limit",
@@ -198,9 +208,15 @@ internal sealed class MorticianSettings
             SecondarySection,
             "Ghoul Degen",
             "Health each ghoul loses per second at level 1. 0 means ghouls never decay.",
-            Presets(original: 10f, balancedMortician: 10f, evenMoreBalanced: 10f),
-            note: "With the original ghoul health (150, plus 45 per level), the original degen values give every ghoul about 15 seconds to live at any level.");
-        GhoulDegenPerLevel = Bind(SecondarySection, "Ghoul Degen Per Level", "Health lost per second that ghouls gain per level.", Presets(original: 3f, balancedMortician: 3f, evenMoreBalanced: 3f));
+            Presets(original: 10f, balancedMortician: 10f, evenMoreBalanced: 4f),
+            note: "With the default ghoul health (150, plus 45 per level), every preset gives an unhealed ghoul about 15 seconds to live at any level.");
+        GhoulDegenPerLevel = Bind(SecondarySection, "Ghoul Degen Per Level", "Health lost per second, per level.", Presets(original: 3f, balancedMortician: 3f, evenMoreBalanced: 1.2f));
+        GhoulDegenGrowthPercent = Bind(
+            SecondarySection,
+            "Ghoul Degen Growth Percent",
+            "How much a ghoul's degen ramps every second, as a percent of its starting degen. 0 keeps degen constant.",
+            Presets(original: 0f, balancedMortician: 0f, evenMoreBalanced: 20f),
+            note: "This is to prevent immortal ghouls when you have a lot of healing. The general idea behind all degen numbers is to ensure ghouls last about 15 seconds before dying naturally, and to let heals offset that, but not prevent it outright.");
         GhoulBiteDamagePercent = Bind(
             SecondarySection,
             "Bite Damage Percent",
@@ -404,9 +420,9 @@ internal sealed class MorticianSettings
 
     private static PresetValues<T> Presets<T>(T original, T balancedMortician, T evenMoreBalanced) => new(original, balancedMortician, evenMoreBalanced);
 
-    private PresetSetting<T> Bind<T>(string section, string key, string summary, PresetValues<T> presets, string vanilla = null, string note = null)
+    private PresetSetting<T> Bind<T>(string section, string key, string summary, PresetValues<T> presets, string vanilla = null, string note = null, AcceptableValueBase acceptableValues = null)
     {
-        var entry = _config.Bind(section, key, presets.EvenMoreBalanced, Describe(summary, presets, vanilla, note));
+        var entry = _config.Bind(section, key, presets.EvenMoreBalanced, new ConfigDescription(Describe(summary, presets, vanilla, note), acceptableValues));
         var setting = new PresetSetting<T>(entry, presets);
 
         _presetSettings.Add(setting);

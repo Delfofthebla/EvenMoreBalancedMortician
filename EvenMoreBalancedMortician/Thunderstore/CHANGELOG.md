@@ -1,3 +1,21 @@
+#### 1.6.0
+
+Requires R2API RecalculateStats.
+
+**Added**
+- New Config Setting "Ghoul Degen Growth Percent" (Raise Dead): a ghoul's degen grows the longer it lives. Healing still keeps ghouls alive longer, but no longer forever. 20% in the EvenMoreBalanced preset, 0% (unchanged) in the others.
+- New Config Setting "Minimum Cooldown" (Raise Dead): the shortest Raise Dead's cooldown can get from cooldown reduction. Brainstalks would otherwise drop it to 0.5 seconds, the game's minimum for every skill. 2 seconds in the EvenMoreBalanced preset, 0.5 (unchanged) in the others.
+
+**Changed** (EvenMoreBalancedMortician preset)
+- Ghoul degen lowered from 10 (+3 per level) to 4 (+1.2 per level) to go with the new degen growth. An unhealed ghoul still lives about 15 seconds. I suspect this one might be a little divisive amongst those who like an immortal army, but hey, that's what configs are for.
+
+**Fixed**
+- A dying elite ghoul no longer counts as an elite kill for your on-kill items. Brainstalks, Defense Nucleus and the like could be triggered by your own ghouls, letting Brainstalks keep itself going with no enemies around.
+- A dying elite ghoul's death effect (such as Mending's healing core) no longer happens twice.
+- Ghouls no longer inherit ZetAspects' hidden items.
+
+Players on 1.5.0 cannot join a lobby hosted on 1.6.0, or the reverse.
+
 #### 1.5.0
 
 Updated for the Hallowed Concepts update. Requires Mortician v0.1.6.

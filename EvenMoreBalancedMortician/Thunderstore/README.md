@@ -22,31 +22,33 @@ I will take a look when I have time.
 
 ## What's different
 
-![Mortician's skills with this mod's numbers](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/MorticianAbilityList.png)
-
 ### The Rebalance
+![Mortician's skills with this mod's numbers](https://raw.githubusercontent.com/Delfofthebla/EvenMoreBalancedMortician/master/docs/screenshots/MorticianAbilityList.png)
 
 #### **Base Stats**
 * Starting health dropped from 200 to 180
 * Health gain per level dropped from 66 to 54 (to match the 30% per level that every other survivor uses)
 
+#### **Soul Offering**
+* On-Kill effects trigger chance lowered from 100% to 50%. (Affected by luck)
+* Sacrificed ghouls still always trigger them
+* 
 #### **Shovel Strike**
 * Is now properly considered a primary skill (For Luminous Shot)
-* Swing damage dropped from 800% to 340%,
+* Swing damage dropped from 800% to 340%
 * Launch damage increased from 350% to 400% (to hit the breakpoint for items that need a 400% hit to trigger)
 
-#### **Ghouls**
-* Base damage lowered from 12 to 8
+#### **Raise Dead / Ghouls**
+* Raise Dead's cooldown can no longer drop below 2 seconds. (Base game default for skills is 0.5, but brainstalks scales this WAAAAY too hard)
+* Base damage lowered from 12 to 8, and damage per level from 2.4 to 1.6
 * Spit proc coefficient dropped from 1.0 to 0.7
+* Ghoul Degen reworked to speed up the longer a ghoul lives. An unhealed ghoul still lasts about 15 seconds, but healing now prolongs a ghoul's life instead of basically making it immortal
 * No longer blindly inherits your equipment slot* (See below for new elite aspect behavior)
 
 #### **Sacrifice**
-* Damage now calculated from Mortician instead of the ghoul. (For better scaling and to avoid the ghoul damage nerf)
+* Damage now calculated from Mortician instead of the ghoul. (For better scaling and to sidestep the ghoul damage nerf)
 * Damage increased from 700% to 800%
 * Range increased from 18m to 20m
-
-#### **Soul Offering**
-* On-Kill effects trigger chance lowered from 100% to 50%. (Affected by luck)
 
 #### **Tombstone**
 * Vengeful Soul damage dropped from 350% to 280%
@@ -57,9 +59,9 @@ I will take a look when I have time.
 ### New Mechanics / Interactions
 
 #### Elite aspects
-* Every spawned ghoul has a 33% chance to inherit an Elite aspect that you're carrying (affected by Luck).
-
+* Every spawned ghoul has a 33% chance to inherit each Elite aspect that you're carrying (affected by Luck).\
   This covers aspect equipment, and aspect items from [ZetAspects](https://thunderstore.io/package/William758/ZetAspects/), which roll once per copy you hold. If you don't play with ZetAspects, you may want to increase this, but follow your gut.
+* An elite ghoul dying does not count as you killing an elite, so it won't trigger items like Brainstalks.
 
 In the base mod, every ghoul copies whatever is in your equipment slot, regardless of the item. I _suspect_ that this was
 meant to propagate passives (like Elite Aspects), but it's hard to know for certain. The problem is that the default
@@ -69,7 +71,7 @@ BalancedMortician turned that off entirely, which was fair, but I liked ghouls t
 #### Lysate Cell
 
 Despite how strong Mortician is, I was genuinely surprised to learn that Lysate Cell did not work on the tombstone at all.
-This felt like a power gap that I could fill rather than one to reign in. Engineer gets an extra turret from a Lysate Cell, 
+This felt like a power gap that I could fill rather than one to rein in. Engineer gets an extra turret from a Lysate Cell, 
 after all. So now Mortician gets an extra tombstone. With two up, a slain ghoul's vengeful soul goes to whichever tombstone
 is nearest to where it died.
 

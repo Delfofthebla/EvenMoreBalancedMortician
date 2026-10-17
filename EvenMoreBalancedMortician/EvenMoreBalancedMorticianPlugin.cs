@@ -18,6 +18,7 @@ namespace EvenMoreBalancedMortician;
 [BepInDependency(LanguageAPI.PluginGUID)]
 [BepInDependency(DeployableAPI.PluginGUID)]
 [BepInDependency(NetworkingAPI.PluginGUID)]
+[BepInDependency(RecalculateStatsAPI.PluginGUID)]
 [BepInDependency(RiskOfOptionsMenu.GUID, BepInDependency.DependencyFlags.SoftDependency)]
 [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
 [BepInIncompatibility(BALANCED_MORTICIAN_GUID)]
@@ -25,7 +26,7 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
 {
     public const string GUID = "com.Delfofthebla.EvenMoreBalancedMortician";
     public const string NAME = "EvenMoreBalancedMortician";
-    public const string VERSION = "1.5.0";
+    public const string VERSION = "1.6.0";
 
     private const string BALANCED_MORTICIAN_GUID = "com.Bloonjitsu7.BalancedMortician";
 
@@ -40,8 +41,10 @@ public class EvenMoreBalancedMorticianPlugin : BaseUnityPlugin
 
         DyingGhoul.Install();
         ShovelDamageSourcePatch.Install(_settings.ShovelCountsAsPrimarySkill);
+        RaiseDeadMinimumCooldownPatch.Install(_settings.RaiseDeadMinimumCooldown);
         GhoulEquipmentPatch.Install();
         GhoulAspectPatch.Install(_settings.GhoulAspectInheritChance);
+        GhoulRotPatch.Install(_settings.GhoulDegenGrowthPercent);
         GhoulOnKillPatch.Install(_settings.GhoulOnKillTriggerChance, _settings.SacrificeGuaranteesOnKill);
         ProcCoefficientPatch.Install(_settings);
         GhoulLimitPatch.Install(_settings.GhoulLimit);
